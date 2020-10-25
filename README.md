@@ -13,6 +13,7 @@ Team 2 Java PA1
   - [X] Company
   - [X] Server/Client classes
 
+
 ### Notes:
 
 ## List of what we're doing
