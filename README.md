@@ -7,8 +7,8 @@ Team 2 Java PA1
 - [ ] Add constructors, getters/setters to classes
   - [ ] User + child classes
   - [ ] Order
-  - [ ] Product + child classes
-  - [ ] Catalog
+  - [X] Product + child classes
+  - [X] Catalog
 - [X] Methods, but not implemented
   - [X] Company
   - [X] Server/Client classes
