@@ -31,9 +31,17 @@ public class Company {
 
     //============================================================================
     // 3. Product Management
-    public void addProduct(){}
-    public void removeProduct(){}
-    public void addCategoryFromProduct(Product product){}
+    public void addProduct(Product p){
+        this.catalog.add(p);
+    }
+    public void removeProduct(Product p){
+        //todo test
+        catalog.removeIf(product -> product.equals(p));
+    }
+    //todo are these going to be called when products are added/removed from catalog?
+    public void addCategoryFromProduct(Product product){
+
+    }
     public void removeCategoryFromProduct(Product product){}
 
     //============================================================================
@@ -46,8 +54,30 @@ public class Company {
 
     //============================================================================
     // 5. Browsing/Searching
-    public Product searchProduct(String str){return null;} //searches both product name and description
-    public String browseCategory(Category category){return "";} //lists all products within a category
+    public ArrayList<Product> searchProducts(String str){
+        ArrayList<Product> matchingProducts = new ArrayList<>();
+        //todo make this search method more precise
+        for (Product p : catalog){
+            if (p.getName().contains(str) || p.getDescription().contains(str)){
+                matchingProducts.add(p);
+            }
+        }
+        return matchingProducts;
+    } //searches both product name and description
+
+    public ArrayList<Product> browseCategory(Category category){
+        ArrayList<Product> productsInCategory = new ArrayList<>();
+        for (Product p : catalog){
+            for (Category c : p.getCategories()){
+                //todo implement comparator classes & compare in correct way
+                //if (!c.compareTo(category)){
+                if (false){
+                    productsInCategory.add(p);
+                    break;
+                }
+            }
+        }
+        return productsInCategory;}
 
     //============================================================================
     // 6. Get Product details

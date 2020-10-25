@@ -52,12 +52,34 @@ public class Product {
         this.incorporatedDate = date;
     }
     public void addCategory(Category c){
-        categories.add(c);
+        this.categories.add(c);
+    }
+    public ArrayList<Category> getCategories(){
+        return this.categories;
     }
     @Override
     public String toString(){
-        //todo implement
-        return this.name + "to string";
+        StringBuilder sb = new StringBuilder();
+        sb.append("Product: ");
+        sb.append(this.name + " ");
+        sb.append(this.id + " ");
+        sb.append(this.brand + " ");
+        sb.append(this.getIncorporatedDate());
+        sb.append("\n\t" + this.getDescription() + "\n");
+        return sb.toString();
+    }
+    //@Override
+    public int compareTo(Product p2){
+        ProductComparator pc = new ProductComparator();
+        return pc.compare(this, p2);
+    }
+
+    //@Override
+    public boolean equals(Product p2){
+        if (this.compareTo(p2) == 0){
+            return true;
+        } else
+            return false;
     }
 
 }
