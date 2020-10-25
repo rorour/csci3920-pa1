@@ -19,6 +19,7 @@ public class Product {
         this.brand = brand;
         this.description = description;
         this.incorporatedDate = incorporatedDate;
+        this.categories = new ArrayList<>();
     }
 
     public String getName(){
@@ -54,6 +55,9 @@ public class Product {
     public void addCategory(Category c){
         this.categories.add(c);
     }
+    public void removeCategory(Category c){
+        this.categories.removeIf(category -> category.equals(c));
+    }
     public ArrayList<Category> getCategories(){
         return this.categories;
     }
@@ -75,6 +79,7 @@ public class Product {
     }
 
     //@Override
+    //for now, equals determines only whether product name & product id are the same
     public boolean equals(Product p2){
         if (this.compareTo(p2) == 0){
             return true;

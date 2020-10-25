@@ -34,4 +34,23 @@ public class Category {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    //compares category names
+    public int compareTo(Category c2){
+        CategoryComparator cc = new CategoryComparator();
+        return cc.compare(this, c2);
+    }
+
+    //only checks if category names are the same
+    public boolean equals(Category c2){
+        if (this.compareTo(c2) == 0){
+            return true;
+        } else
+            return false;
+    }
+
+    @Override
+    public String toString(){
+        return name + " " + id + "\n\t" + description;
+    }
 }
