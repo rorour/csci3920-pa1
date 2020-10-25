@@ -5,6 +5,7 @@ import java.util.Comparator;
 public class ProductComparator implements Comparator<Product> {
 
     @Override
+    //for now, compare sorts by name and then by id
     public int compare(Product o1, Product o2) {
         //compare by name (this will sort alphabetically for most catalog purposes)
         int namesEqual = o1.getName().compareTo(o2.getName());

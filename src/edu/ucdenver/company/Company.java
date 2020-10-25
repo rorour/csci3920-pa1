@@ -12,6 +12,7 @@ public class Company {
     private ArrayList<Product> catalog;
     private ArrayList<Category> categories;
     private ArrayList<Order> orders;
+    private Category defaultCategory;
 
     private String name;
 
@@ -20,6 +21,8 @@ public class Company {
         users = new ArrayList<>();
         catalog = new ArrayList<>();
         categories = new ArrayList<>();
+        defaultCategory = new Category("Default", "001", "Default category.");
+        categories.add(defaultCategory);
     }
 
     //============================================================================
@@ -31,47 +34,65 @@ public class Company {
 
     //============================================================================
     // 3. Product Management
+    //add new product to category
     public void addProduct(Product p){
+        if (p.getCategories().size() == 0){
+            p.addCategory(this.defaultCategory);
+        }
         this.catalog.add(p);
     }
     public void removeProduct(Product p){
-        //todo test
         catalog.removeIf(product -> product.equals(p));
     }
-    //todo are these going to be called when products are added/removed from catalog?
-    public void addCategoryFromProduct(Product product){
-
-    }
+    //todo i don't think we need these since product has its add/removecategory functions
+    public void addCategoryFromProduct(Product product){ }
     public void removeCategoryFromProduct(Product product){}
 
     //============================================================================
     // 4. Product Category Management
-    public void addCategory(Category category){}
+    public void addCategory(Category category){this.categories.add(category);}
     public Category findCategory(String c){return null;} //for checking to see if it already exists in list
-    public void removeCategory(Category category){
+    public void removeCategory(Category categoryToRemove){
+        for (Category c : this.categories){
+            if (c.equals(categoryToRemove)){
+                //found desired category
+                //for products in categoryToRemove in catalog, remove cTR from product's category array
+                for (Product p : browseCategory(categoryToRemove)){
+                    p.removeCategory(categoryToRemove);
+                    //if product no longer has a category, assign default
+                    if (p.getCategories().size() == 0){
+                        p.addCategory(defaultCategory);
+                    }
+                }
+                //remove cTR from company's categories
+                categories.remove(c);
+                //break because the category was already found
+                break;
+            }
+        }
         //note: needs to search all products that have this category and set it to default category for each product
     }
 
     //============================================================================
     // 5. Browsing/Searching
+    //searches both product name and description
     public ArrayList<Product> searchProducts(String str){
         ArrayList<Product> matchingProducts = new ArrayList<>();
-        //todo make this search method more precise
+        //todo make this search method more precise so it doesn't need a full string
         for (Product p : catalog){
             if (p.getName().contains(str) || p.getDescription().contains(str)){
                 matchingProducts.add(p);
             }
         }
         return matchingProducts;
-    } //searches both product name and description
+    }
 
+    //returns all products in category
     public ArrayList<Product> browseCategory(Category category){
         ArrayList<Product> productsInCategory = new ArrayList<>();
         for (Product p : catalog){
             for (Category c : p.getCategories()){
-                //todo implement comparator classes & compare in correct way
-                //if (!c.compareTo(category)){
-                if (false){
+                if(c.equals(category)){
                     productsInCategory.add(p);
                     break;
                 }
@@ -117,7 +138,7 @@ public class Company {
     public ArrayList<Product> getCatalog(){
         return this.catalog;
     }
-    public ArrayList<Category> getCategory(){
+    public ArrayList<Category> getCategories(){
         return this.categories;
     }
 
