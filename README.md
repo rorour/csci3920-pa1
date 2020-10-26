@@ -1,22 +1,20 @@
 # csci3920-pa1
 Team 2 Java PA1
 
-### To Do List:
-- [X] Create packages 
-- [X] Create classes
-- [ ] Add constructors, getters/setters to classes
-  - [ ] User + child classes
-  - [ ] Order
-  - [X] Product + child classes
-  - [X] Catalog
-- [X] Methods, but not implemented
-  - [X] Company
-  - [X] Server/Client classes
-
+### To Do List (NEW as of Oct 26):
+- [ ] Implement Server, Client, ClientWorker
+  - [ ] Get client and server to communicate (due this last?)
+- [ ] Get Apps working
+  - [ ] Store App with JavaFX GUI 
+  - [ ] Admin App with JavaFX GUI
+  - [ ] Server App
+- [ ] Extra Credit
+- [ ] Save/Load
+- [ ] Terminate
 
 ### Notes:
 
 ## List of what we're doing
 #### Raven: Product & subclasses, Category, & related methods in Company
-#### Lora: Server, Client and ClientWorker methods are written in. I'm working on Company now (just writing the methods w/out implementing them)
+#### Lora: Not sure yet, User login for store and admin app 
 
