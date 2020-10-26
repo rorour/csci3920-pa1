@@ -27,6 +27,7 @@ public class Company {
         defaultCategory = new Category("Default", "001", "Default category.");
         categories.add(defaultCategory);
         orderNumbers = 0;
+
     }
 
     //============================================================================
