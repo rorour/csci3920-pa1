@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 
+
 /**TODO: Add implementation to Company methods
  * Note: Only admins have access to product management
  */
@@ -13,6 +14,7 @@ public class Company {
     private ArrayList<Category> categories;
     private ArrayList<Order> orders;
     private Category defaultCategory;
+    private static int orderNumbers; //increments each time an order is made by various customers
 
     private String name;
 
@@ -21,15 +23,57 @@ public class Company {
         users = new ArrayList<>();
         catalog = new ArrayList<>();
         categories = new ArrayList<>();
+        orders = new ArrayList<>();
         defaultCategory = new Category("Default", "001", "Default category.");
         categories.add(defaultCategory);
+        orderNumbers = 0;
+
     }
 
     //============================================================================
     // 1 & 2. Create and Login Users
-    public void addUser(String name, String email, String password){}
-    public User findUser(String name, String email){return null;} //for checking if user doesn't already exist in list
-    public void loginUser(String email, String password){} //should we make this a boolean?
+    public void addCustomer(String name, String email, String password) throws IllegalArgumentException {
+        User tempUser = findUser(name, email);
+        if(tempUser == null){
+            users.add(new Customer(name, email, password));
+        }
+        else{
+            throw new IllegalArgumentException("Username and/or email is already taken");
+        }
+
+    }
+
+    public void addAdmin(String name, String email, String password) throws IllegalArgumentException{
+        User tempUser = findUser(name, email);
+        if(tempUser == null){
+            users.add(new Administrator(name, email, password));
+        }
+        else{
+            throw new IllegalArgumentException("Username and/or email is already taken");
+        }
+    }
+
+    //Checks to see if user already exists in database. return null if empty
+    public User findUser(String name, String email){
+        if(!users.isEmpty()){
+            for(User u : users){
+                if(u.getDisplayName().equals(name) || u.getEmail().equalsIgnoreCase(email)){
+                    return u;
+                }
+            }
+        }
+        return null;
+    }
+    //returns user if logged in properly.
+    public User loginUser(String email, String password) throws IllegalArgumentException{
+        for(User user : this.users){
+            if(user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)){
+                return user;
+            }
+        }
+        throw new IllegalArgumentException("Log in unsuccessful. Either email or password is incorrect");
+
+    }
 
 
     //============================================================================
@@ -106,25 +150,117 @@ public class Company {
 
     //============================================================================
     // 7. Order Management
-    // Note: parameters should be changed once we figure out how classes communicate with each other
-
-    public void createEmptyOrder(Customer customer){
-        String orderNumber = "TempOrder#";
-        customer.createOpenOrder(orderNumber); //user can only have one open order at a time
-        //need to throw an exception if openOrder already exists
+    public void createEmptyOrder(Customer customer) throws IllegalArgumentException {
+        int orderNumber = createNewOrderNum();
+        if(!customer.openOrderExists()){
+            customer.createOpenOrder(orderNumber);
+        } else {
+            throw new IllegalArgumentException("Open order already exists");
+        }
     }
-    
     //add product to order. will add product once, if customer requires the product more than once, will add multiple times
-    public void addProductToOrder(Customer customer, Product product){}
+    public void addProductToOrder(Customer customer, Product product) throws IllegalArgumentException{
+        if(customer.openOrderExists()){
+            customer.getOpenOrder().addProduct(product);
+        }
+        else {
+            throw new IllegalArgumentException("Open order does not exist");
+        }
+    }
+
     //remove product from order. Will remove all instances of particular product from order
-    public String listOrders(Customer customer){return "";} //list orders w/out repetition
-    public void finalizeOrder(Customer customer){}//once order is finalized, customer cannot add/remove products from it
-    public void cancelOrder(Customer customer){} //if order is open, just delete it from the system.
+    public void removeProductFromOrder(Customer customer, Product product) throws IllegalArgumentException{
+        if(customer.openOrderExists()) {
+            customer.getOpenOrder().removeProduct(product);
+        }
+        else {
+            throw new IllegalArgumentException("Open order does not exist");
+        }
+    }
+
+    public String listOrderProducts(Customer customer){
+        ArrayList<Product> tempProducts = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        if(customer.openOrderExists()){
+            //makes new tempProduct list without duplicates
+            for(Product p : customer.getOpenOrder().getProducts()){
+                if(!tempProducts.contains(p)){
+                    tempProducts.add(p);
+                }
+            }
+            //Now makes the string of products
+            for(Product p : tempProducts){
+                sb.append(p);
+            }
+
+        }
+        return sb.toString();
+    }
+
+    public void finalizeOrder(Customer customer) throws IllegalArgumentException{
+        if(customer.openOrderExists()){
+            Order tempOrder = customer.getOpenOrder();
+            tempOrder.finalizeOrder();
+            orders.add(tempOrder);
+            customer.finalizeOpenOrder();
+        }
+        else{
+            throw new IllegalArgumentException("Open Order does not exist");
+        }
+    }//once order is finalized, customer cannot add/remove products from it
+
+    public void cancelOrder(Customer customer){
+        if(customer.openOrderExists()){
+            customer.cancelOrder();
+        }
+    } //if order is open, just delete it from the system.
+
+    private static int createNewOrderNum(){
+        return orderNumbers++;
+    }
+
 
     //============================================================================
     // 8. Order Report
-    public String listFinalizedOrders(Customer customer){return "";}
-    public String listOrdersByDate(LocalDate date){return "";}
+    public String listOrderReport(Customer customer) throws IllegalArgumentException{
+       if(!customer.getFinalizedOrders().isEmpty()){
+           StringBuilder sb = new StringBuilder();
+           for(Order orders : customer.getFinalizedOrders()){
+               sb.append(orders + "\n");
+           }
+           return sb.toString();
+       }
+       else {
+           throw new IllegalArgumentException("There are no finalized orders");
+       }
+    }
+    //TODO: Right now it prints after and before specified dates (basically > and <, but not >= and <= )
+    public String listOrdersByDate(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException{
+        //ArrayList<Order> rangeOrderList = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        if(!orders.isEmpty()){
+            for(Order o : orders){
+                if(o.getFinalizedDate().isAfter(startDate) && o.getFinalizedDate().isBefore(endDate)){
+                    sb.append(o + "\n");
+                }
+            }
+            return sb.toString();
+        } else {
+            throw new IllegalArgumentException("There are no finalized orders between " + startDate + " and " + endDate);
+        }
+
+    }
+    //TODO: delete this when finalizing project. Was for testing purposes only.
+    public void testFinalizedOrders(){
+        Order temp = null;
+        for(int i = 1; i < 13; i++){
+            temp = new Order(createNewOrderNum());
+            temp.finalizeOrder();
+            temp.setFinalizedDate(LocalDate.of(2020,i,1));
+            this.orders.add(temp);
+        }
+
+    }
 
     //============================================================================
     // 9. is for apps, but I'm putting it here as a reminder:
@@ -134,6 +270,9 @@ public class Company {
 
     public ArrayList<User> getUsers(){
         return this.users;
+    }
+    public ArrayList<Order> getOrders(){
+        return this.orders;
     }
     public ArrayList<Product> getCatalog(){
         return this.catalog;
