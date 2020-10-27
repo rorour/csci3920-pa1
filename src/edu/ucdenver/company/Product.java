@@ -1,9 +1,10 @@
 package edu.ucdenver.company;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Product {
+public class Product implements Serializable {
     private String name;
     private String id;
     private String brand;

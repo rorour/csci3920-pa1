@@ -17,6 +17,6 @@ Team 2 Java PA1
 ### Notes:
 
 ## List of what we're doing
-#### Raven: Product & subclasses, Category, & related methods in Company
+#### Raven: Server/Client
 #### Lora: Server, Client and ClientWorker methods are written in. I'm working on Company now (just writing the methods w/out implementing them)
 
