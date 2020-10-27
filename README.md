@@ -3,7 +3,7 @@ Team 2 Java PA1
 
 ### To Do List (NEW as of Oct 26):
 - [ ] Implement Server, Client, ClientWorker
-  - [ ] Get client and server to communicate (due this last?)
+  - [X] Get client and server to communicate 
 - [ ] Get Apps working
   - [ ] Store App with JavaFX GUI 
   - [ ] Admin App with JavaFX GUI
@@ -13,8 +13,8 @@ Team 2 Java PA1
 - [ ] Terminate
 
 ### Notes:
+Server/Client are communicating & sending Products successfully; the classes are super rough and need to be reorganized though
 
 ## List of what we're doing
-#### Raven: Product & subclasses, Category, & related methods in Company
+#### Raven: Server/Client classes
 #### Lora: Not sure yet, User login for store and admin app 
-

@@ -1,6 +1,8 @@
 package edu.ucdenver.company;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable {
     private String name;
     private String id;
     private String description;
