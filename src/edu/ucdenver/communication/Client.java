@@ -66,6 +66,12 @@ public class Client {
                 String serverMessage = (String)input.readObject();
                 System.out.println("Server Message:" + serverMessage);
 
+            output.writeObject(new String("charlie@customer.com"));
+            output.flush();
+            output.writeObject(new String("456pw"));
+            output.flush();
+
+
                 Product p = new Product("Teddy Bear", "1001", "Beanie Babies", "A stuffed brown bear.",
                         LocalDate.of(2020, 10,24));
                 System.out.println("Sending>>>>\n");

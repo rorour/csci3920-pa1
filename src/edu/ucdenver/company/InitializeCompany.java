@@ -34,8 +34,6 @@ public class InitializeCompany {
         Category c4 = new Category("Books", "103", "All books.");
         Category c5 = new Category("Paperbacks", "104", "Paperback books.");
         Category c6 = new Category("Cell Phones", "105", "Cellular phones.");
-
-        //add categories
         p2.addCategory(c2);
         p3.addCategory(c2);
         p3.addCategory(c3);
@@ -44,6 +42,14 @@ public class InitializeCompany {
         p5.addCategory(c1);
         p6.addCategory(c4);
         p6.addCategory(c5);
+
+        //add categories
+        company.addCategory(c1);
+        company.addCategory(c2);
+        company.addCategory(c3);
+        company.addCategory(c4);
+        company.addCategory(c5);
+        company.addCategory(c6);
 
         //add products
         company.addProduct(p2);
