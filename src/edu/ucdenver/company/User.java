@@ -4,11 +4,7 @@ public abstract class User {
     private String displayName;
     private String email;
     private String password;
-
-
-    //private final String ACCESS_LEVEL;
-    //I changed this because I got errors when using final, final has to be initialized in constructor.
-    //instead I put ACCESS_LEVEL in the child classes.
+    private boolean loggedIn;
 
     private String accessLevel;
 
@@ -16,7 +12,45 @@ public abstract class User {
         this.displayName = displayName;
         this.email = email;
         this.password = password;
+        this.loggedIn = false;
     }
 
     public abstract String getAccessLevel();
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean getLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Name:%s Email:%s Access Level:%s ", displayName, email, this.getAccessLevel());
+    }
 }
