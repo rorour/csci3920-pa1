@@ -2,6 +2,7 @@ package edu.ucdenver.company;
 
 import javafx.scene.control.Cell;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,7 +40,7 @@ public class TestingProducts {
         Category c6 = new Category("Textbooks", "105", "All textbooks.");
         Category c7 = new Category("Furniture", "100", "Stuff");
 
-        //        add category to product
+        //add category to product
         p6.addCategory(c4);
         p6.addCategory(c5);
         p3.addCategory(c3);
@@ -153,6 +154,27 @@ public class TestingProducts {
             System.out.printf("%s:\n", c.getName());
             System.out.println(myCompany.browseCategory(c));
         }
+
+
+        //testing reading/writing objects to/from file
+
+        try {
+            FileOutputStream fileOut = new FileOutputStream("myfile.txt");
+            ObjectOutputStream output = new ObjectOutputStream(fileOut);
+            ObjectInputStream input = null;
+            output.writeObject(p4);
+            output.flush();
+            System.out.println("Wrote object to file.");
+            output.close();
+            FileInputStream fileIn = new FileInputStream("myfile.txt");
+            input = new ObjectInputStream(fileIn);
+            CellPhone newPhone = (CellPhone)input.readObject();
+            System.out.println("Read from file" + newPhone);
+            input.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
