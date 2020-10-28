@@ -1,8 +1,88 @@
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
+<?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<GridPane fx:controller="sample.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+   <children>
+      <TabPane prefHeight="480.0" prefWidth="640.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="TEST LOGIN">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <GridPane layoutX="62.0" layoutY="89.0" prefHeight="114.0" prefWidth="517.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="218.3999755859375" minWidth="10.0" prefWidth="173.599951171875" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.800048828125" minWidth="10.0" prefWidth="324.800048828125" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Email" GridPane.halignment="RIGHT">
+                                 <GridPane.margin>
+                                    <Insets right="30.0" />
+                                 </GridPane.margin></Label>
+                              <Label text="Password" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets right="30.0" />
+                                 </GridPane.margin></Label>
+                              <TextField fx:id="txtfield_loginUser" prefHeight="26.0" prefWidth="262.0" GridPane.columnIndex="1" />
+                              <TextField fx:id="txtfield_loginPssd" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button fx:id="btnLogin" mnemonicParsing="false" onAction="#loginUser" text="Login" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab id="tabEC" fx:id="tabEC" onSelectionChanged="#listProductUpdate" text="TEST EC">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="265.0" prefWidth="428.0">
+                     <children>
+                        <GridPane layoutX="8.0" layoutY="7.0" prefHeight="414.0" prefWidth="592.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="377.60003662109375" minHeight="10.0" prefHeight="374.4000244140625" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="154.60001220703126" minHeight="10.0" prefHeight="39.79997558593749" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ListView fx:id="lst_products" prefHeight="30.0" prefWidth="251.0" />
+                              <ImageView id="imgView" fx:id="imgview_product" fitHeight="136.0" fitWidth="334.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <image>
+                                    <Image url="@resources/noImg.png" />
+                                 </image></ImageView>
+                              <Label fx:id="labellogged" prefHeight="18.0" prefWidth="170.0" text="NotLoggedIn" textFill="RED" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
 </GridPane>

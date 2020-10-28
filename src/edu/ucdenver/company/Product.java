@@ -12,6 +12,8 @@ public class Product {
     private ArrayList<Category> categories;
     //todo figure out how to add: private Image image;
 
+    private String imageURL;
+
     public Product(String name, String id, String brand, String description,
                    LocalDate incorporatedDate){
         this.name = name;
@@ -20,6 +22,7 @@ public class Product {
         this.description = description;
         this.incorporatedDate = incorporatedDate;
         this.categories = new ArrayList<>();
+        this.imageURL = "";
     }
 
     public String getName(){
@@ -85,6 +88,14 @@ public class Product {
             return true;
         } else
             return false;
+    }
+
+    //TODO: Right now I have it handle the url. We can extend this to image if it doesn't work with save/load and server/client
+    public void setImageURL(String imageName, String extension){
+        this.imageURL = "/sample/resources/" + imageName + "."+ extension;
+    }
+    public String getImageURL(){
+        return this.imageURL;
     }
 
 }
