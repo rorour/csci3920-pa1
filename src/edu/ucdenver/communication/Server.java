@@ -1,89 +1,90 @@
 package edu.ucdenver.communication;
-import edu.ucdenver.company.*;
+
+import edu.ucdenver.company.Company;
+import edu.ucdenver.company.Product;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**TODO: implement Server class methods
- *
- */
 //note: this should be in its own package later
 public class Server {
     private int port;
     private int backlog;
     private int connectionCounter;
+    ServerSocket serverSocket;
     private Company company;
 
-
     public Server() {
+        this(10001, 10);
     }
 
-    public Server(int port, int backlog){}
+    public Server(int port, int backlog){
+        this.port = port;
+        this.backlog = backlog;
+        this.connectionCounter = 0;
+    }
+    public void startServer() throws IOException {
+        this.serverSocket = new ServerSocket(this.port, this.backlog);
 
-    public Socket waitForClientConnection(){return null;}
+    }
+    public Socket waitForClientConnection() throws IOException {
+        System.out.println("Waiting for a connection...");
+        Socket clientConnection = serverSocket.accept();
+        System.out.printf("Connection %d accepted from %s", ++this.connectionCounter,
+                clientConnection.getInetAddress().getHostName());
+        return clientConnection;
+    }
+    public void setCompany(Company company){
+        this.company = company;
+    }
 
-    private void runServer(){}
 
-    //todo replace this later
-    public static void main(String[] args){
+
+    public void runServer(){
         try{
-            //create server socket, the constructor will bind and listen
-            //takes port number and backlog(size of queue that port has)
-            //choose port number and backlog size; use try/catch because ServerSocket throws exception
-            ServerSocket serverSocket = new ServerSocket(10001, 5);
+            startServer();
+        while(true) {
             Socket clientConnection = null;
             ObjectOutputStream output = null;
             ObjectInputStream input = null;
+            try {
+                clientConnection = waitForClientConnection();
+                output = new ObjectOutputStream(clientConnection.getOutputStream());
+                input = new ObjectInputStream(clientConnection.getInputStream());
+                //sleep for 3 seconds
+                Thread.sleep(3000);
 
-            while(true) {
-                try {
-                    System.out.println("Waiting for a connection...");
+                //send text to client. if autoflush were off, we would add output.flush() after.
+                output.writeObject("Connected to server");
+                output.flush();
 
-                    //program will pause here until a connection is made.
-                    //accept() returns new socket through which connection will continue
-                    clientConnection = serverSocket.accept();
-                    System.out.println("Connection accepted from " + clientConnection.getInetAddress().getHostName());
-
-                    System.out.println("Getting data streams");
-                    //PrintWriter turns stream into printable string
-                    //autoflush parameter clears stream
-                    output = new ObjectOutputStream(clientConnection.getOutputStream());
-                    input = new ObjectInputStream(clientConnection.getInputStream());
-
-                    //sleep for 3 seconds
-                    Thread.sleep(3000);
-
-                    //send text to client. if autoflush were off, we would add output.flush() after.
-                    output.writeObject("Connected to server");
-                    output.flush();
-
-                    //receive text from client
+                //receive text from client
 //                    String clientMessage = (String)input.readObject();
 //                    System.out.println("Client Message:" + clientMessage);
 
-                    Product p = (Product) input.readObject();
-                    System.out.println("Client Sent Object:" + p);
+                Product p = (Product) input.readObject();
+                System.out.println("Client Sent Object:" + p);
 
 
-                } catch (InterruptedException | NullPointerException | ClassNotFoundException e) {
+            } catch (InterruptedException | NullPointerException | ClassNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    input.close();
+                    output.close();
+                    //this is separate from the server socket that client connects to and closes, so it needs to be closed as well.
+                    clientConnection.close();
+                } catch (Exception e) {
                     e.printStackTrace();
-                } finally {
-                    try {
-                        input.close();
-                        output.close();
-                        //this is separate from the server socket that client connects to and closes, so it needs to be closed as well.
-                        clientConnection.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
-            }//end while loop
-        }
-        catch(IOException ioe){
-            System.out.println("Cannot open the server.");
-            ioe.printStackTrace();
-        }
+            }
+        }//end while loop
+    }
+    catch(IOException ioe){
+        System.out.println("Cannot open the server.");
+        ioe.printStackTrace();
+    }
     }
 
 }

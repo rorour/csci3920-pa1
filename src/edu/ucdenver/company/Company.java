@@ -1,5 +1,6 @@
 package edu.ucdenver.company;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 /**TODO: Add implementation to Company methods
  * Note: Only admins have access to product management
  */
-public class Company {
+public class Company implements Serializable {
     private ArrayList<User> users;
     private ArrayList<Product> catalog;
     private ArrayList<Category> categories;

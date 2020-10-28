@@ -1,75 +1,81 @@
 package edu.ucdenver.communication;
+import edu.ucdenver.company.*;
 
-import edu.ucdenver.company.Product;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ServerApp {
     public static void main(String[] args){
-        //menu: load data from file or start server
+        Scanner sc = new Scanner(System.in);
+        String fileName = "initialize.txt";
+        boolean startServer = false;
+        boolean companyInitialized = false;
+        ObjectOutputStream output;
+        ObjectInputStream input;
+        Company company;
+
+        //initialize company from file
+        while (!startServer){
+            System.out.printf("Menu: \nA) Load Data from File \nB) Start Server\n");
+            String menuChoice = sc.nextLine();
+            switch(menuChoice){
+                case "A":
+                case "a":
+                    //get file name or use default
+                    System.out.printf("Enter file name to load company from, or enter \"Y\" to load from " +
+                            "default file \"%s\"\n", fileName);
+                    String newFileName = sc.nextLine();
+                    if (!newFileName.equals("Y") && !newFileName.equals("y")){
+                        fileName = newFileName;
+                    }
+                    //read from file
+                    try {
+                        FileInputStream fileIn = new FileInputStream(fileName);
+                        input = new ObjectInputStream(fileIn);
+                        company = (Company)input.readObject();
+                        System.out.printf("Company %s initialized from file.\n", company.getName());
+                        input.close();
+                    } catch (IOException ioe) {
+                        System.out.printf("Could not read from file %s\n", fileName);
+                        ioe.printStackTrace();
+                        break;
+                    } catch (ClassNotFoundException e){
+                        System.out.printf("Class not found\n");
+                        e.printStackTrace();
+                        break;
+                    }
+                    companyInitialized = true;
+                    break;
+                case "B":
+                case "b":
+                    startServer = true;
+                    break;
+                default:
+                    System.out.println("Unknown menu choice.\n");
+                    break;
+            }
+        }
+        //check if company is initialized; initialize if necessary
+        if (!companyInitialized){
+            System.out.println("Company has not been initialized yet. Please name the company: \n");
+            String companyName = sc.nextLine();
+            company = new Company(companyName);
+        }
 
         //start server
-        try{
-            //create server socket, the constructor will bind and listen
-            //takes port number and backlog(size of queue that port has)
-            //choose port number and backlog size; use try/catch because ServerSocket throws exception
-            ServerSocket serverSocket = new ServerSocket(10001, 5);
-            Socket clientConnection = null;
-            ObjectOutputStream output = null;
-            ObjectInputStream input = null;
+        Server server = new Server();
+        //
+        server.setCompany(company);
+        server.startServer();
+        //accept client connections
 
-            while(true) {
-                try {
-                    System.out.println("Waiting for a connection...");
-
-                    //program will pause here until a connection is made.
-                    //accept() returns new socket through which connection will continue
-                    clientConnection = serverSocket.accept();
-                    System.out.println("Connection accepted from " + clientConnection.getInetAddress().getHostName());
-
-                    System.out.println("Getting data streams");
-                    //PrintWriter turns stream into printable string
-                    //autoflush parameter clears stream
-                    output = new ObjectOutputStream(clientConnection.getOutputStream());
-                    input = new ObjectInputStream(clientConnection.getInputStream());
-
-                    //sleep for 3 seconds
-                    Thread.sleep(3000);
-
-                    //send text to client. if autoflush were off, we would add output.flush() after.
-                    output.writeObject("Connected to server");
-                    output.flush();
-
-                    //receive text from client
-//                    String clientMessage = (String)input.readObject();
-//                    System.out.println("Client Message:" + clientMessage);
-
-                    Product p = (Product) input.readObject();
-                    System.out.println("Client Sent Object:" + p);
-
-
-                } catch (InterruptedException | NullPointerException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        input.close();
-                        output.close();
-                        //this is separate from the server socket that client connects to and closes, so it needs to be closed as well.
-                        clientConnection.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }//end while loop
-        }
-        catch(IOException ioe){
-            System.out.println("Cannot open the server.");
-            ioe.printStackTrace();
-        }
-        
+        //get client login info
+        //get client commands
+        //update company
+        //disconnect client
+        //write company to file
+        //shut down server
     }
 }

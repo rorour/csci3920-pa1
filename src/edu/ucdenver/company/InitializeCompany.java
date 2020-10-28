@@ -1,10 +1,14 @@
 package edu.ucdenver.company;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 
 //initialize company & write to file so Server can be initialized
 public class InitializeCompany {
-    String fileName = "initialize.txt";
+    static String fileName = "initialize.txt";
 
     public static void main(String[] args){
         Company company = new Company("LR Company");
@@ -49,10 +53,21 @@ public class InitializeCompany {
         company.addProduct(p6);
 
         //add users
-        Administrator a1 = new Administrator("Alice Admin", "alice@admin.com", "pw123");
-        //Customer c1 = new Customer();
-        //company.add
+        company.addAdmin("Alice Admin", "alice@admin.com", "pw123");
+        company.addCustomer("Charlie Customer", "charlie@customer.com", "456pw");
 
-        //add orders?
+        //add orders
+
+        //write to file
+        try{
+            FileOutputStream fileOut = new FileOutputStream(InitializeCompany.fileName);
+            ObjectOutputStream output = new ObjectOutputStream(fileOut);
+            output.writeObject(company);
+            output.flush();
+            System.out.printf("Wrote company to file %s\n", InitializeCompany.fileName);
+            output.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }
