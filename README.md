@@ -13,7 +13,8 @@ Team 2 Java PA1
 - [ ] Terminate
 
 ### Notes:
-Server/Client are communicating & sending Products successfully; the classes are super rough and need to be reorganized though
+10/27 : serverApp is working with super simple test client program which successfully adds product to company.
+Server class is unncessary. to do next: get multiple users working or get GUIs working?
 
 ## List of what we're doing
 #### Raven: Server/Client classes
