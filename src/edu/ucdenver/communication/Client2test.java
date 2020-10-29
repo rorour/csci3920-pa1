@@ -1,5 +1,6 @@
 package edu.ucdenver.communication;
-import edu.ucdenver.company.*;
+
+import edu.ucdenver.company.Product;
 
 import java.io.*;
 import java.net.Socket;
@@ -9,18 +10,18 @@ import java.time.LocalDate;
 /**TODO: implement Client class methods and place in its own package(?)
  *
  */
-public class Client {
+public class Client2test {
     private final int serverPort;
     private final String serverIp;
     private boolean isConnected;
 
     private Socket serverConnection;
 
-    public Client(){
+    public Client2test(){
         this("127.0.0.1", 10000);
     }
 
-    public Client(String serverIp, int serverPort) {
+    public Client2test(String serverIp, int serverPort) {
         this.serverIp = serverIp;
         this.serverPort = serverPort;
         this.isConnected = false;
@@ -71,9 +72,9 @@ public class Client {
             output.writeObject(new String("456pw"));
             output.flush();
 
-                Thread.sleep(5000);
 
-                Product p = new Product("Teddy Bear", "1001", "Beanie Babies", "A stuffed brown bear.",
+            Thread.sleep(1000);
+                Product p = new Product("Barbie Doll", "1010", "Mattel", "A Barbie doll.",
                         LocalDate.of(2020, 10,24));
                 System.out.println("Sending>>>>\n");
                 System.out.println(p);

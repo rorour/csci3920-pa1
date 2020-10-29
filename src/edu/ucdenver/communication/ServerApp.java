@@ -5,6 +5,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServerApp {
     static private Company company = null;
@@ -81,52 +84,27 @@ public class ServerApp {
         int backlog = 10;
         Socket clientConnection = null;
 
+        //ClientWorker is now in charge of company
+        ClientWorker.setCompany(ServerApp.company);
+
         //start server
         ServerApp.serverSocket = new ServerSocket(port, backlog);
+        ExecutorService executorService = Executors.newCachedThreadPool();
 
-        //accept client connections
         while(true){
+            //accept client connection
             clientConnection = waitForClientConnection();
 
-            //get client login info
-            input = new ObjectInputStream(clientConnection.getInputStream());
-            output = new ObjectOutputStream(clientConnection.getOutputStream());
-            User currentUser = null;
-
-            //send confirmation to client
-            output.writeObject(new String("Connected to server"));
-
-            //attempt login
-            try {
-                String email = (String)input.readObject();
-                String password = (String)input.readObject();
-                currentUser = company.loginUser(email, password);
-            } catch (IllegalArgumentException iae){
-                //user not found
-                System.out.println(iae.getMessage());
-            } catch (ClassNotFoundException e){
-                e.printStackTrace();
-            }
-
-            //get client commands
-            //check user permission
-            //update company
-
-            //sample action - add product to catalog
-            Product p = null;
-            try {
-                p = (Product) input.readObject();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Client Sent Object:" + p);
-            company.addProduct(p);
-
-            //disconnect client
-            clientConnection.close();
-
+            //create new thread for client
+            ClientWorker cw = new ClientWorker(clientConnection, connectionCounter);
+            executorService.execute(cw);
         }
+        //ServerApp.company = ClientWorker.getCompany();
         //write company to file
+        //executorService.shutdown();
+        //executorService.awaitTermination();
+        //executorService.shutdownNow();
+        //serverSocket.close();
         //shut down server
     }
 

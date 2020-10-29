@@ -1,30 +1,26 @@
 package edu.ucdenver.communication;
 import edu.ucdenver.company.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
-/**TODO: implement CLientWorker class methods
- *
- */
-
-public class ClientWorker implements Runnable{
+public class ClientWorker implements Runnable {
+    //same company object used by every clientworker
+    private static Company company;
     private Socket clientConnection;
-    private Company company;
     private int id;
-    private PrintWriter output;
-    private BufferedReader input;
+    private ObjectOutputStream output;
+    private ObjectInputStream input;
     private boolean keepRunningClient;
 
-    public ClientWorker(Socket clientConnection, Company company, int id) {
+    public ClientWorker(Socket clientConnection, int id) {
         this.clientConnection = clientConnection;
-        this.company = company;
         this.id = id;
     }
 
-    private void getOutputStream(Socket clientConnection){}
+    public static void setCompany(Company company){
+        ClientWorker.company = company;
+    }
 
     private void sendMessage(String message){}
 
@@ -36,6 +32,50 @@ public class ClientWorker implements Runnable{
 
     @Override
     public void run() {
+        //handle client interactions
+        //todo make sure all necessary company functions are synchronized
+        //close client connection
+
+        try {
+            //get client login info
+            input = new ObjectInputStream(clientConnection.getInputStream());
+            output = new ObjectOutputStream(clientConnection.getOutputStream());
+            User currentUser = null;
+
+            //send confirmation to client
+            output.writeObject(new String("Connected to server"));
+
+            //attempt login
+            try {
+                String email = (String)input.readObject();
+                String password = (String)input.readObject();
+                currentUser = company.loginUser(email, password);
+            } catch (IllegalArgumentException iae){
+                //user not found
+                System.out.println(iae.getMessage());
+            } catch (ClassNotFoundException e){
+                e.printStackTrace();
+            }
+
+            //get client commands
+            //check user permission
+            //update company
+
+            //sample action - add product to catalog
+            Product p = null;
+            try {
+                p = (Product) input.readObject();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            System.out.printf("Client %d Sent Object:" + p, this.id);
+            company.addProduct(p);
+
+            //disconnect client
+            clientConnection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }
