@@ -1,10 +1,14 @@
 package edu.ucdenver.company;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 
 //initialize company & write to file so Server can be initialized
 public class InitializeCompany {
-    String fileName = "initialize.txt";
+    static String fileName = "initialize.txt";
 
     public static void main(String[] args){
         Company company = new Company("LR Company");
@@ -30,8 +34,6 @@ public class InitializeCompany {
         Category c4 = new Category("Books", "103", "All books.");
         Category c5 = new Category("Paperbacks", "104", "Paperback books.");
         Category c6 = new Category("Cell Phones", "105", "Cellular phones.");
-
-        //add categories
         p2.addCategory(c2);
         p3.addCategory(c2);
         p3.addCategory(c3);
@@ -41,6 +43,14 @@ public class InitializeCompany {
         p6.addCategory(c4);
         p6.addCategory(c5);
 
+        //add categories
+        company.addCategory(c1);
+        company.addCategory(c2);
+        company.addCategory(c3);
+        company.addCategory(c4);
+        company.addCategory(c5);
+        company.addCategory(c6);
+
         //add products
         company.addProduct(p2);
         company.addProduct(p3);
@@ -49,10 +59,21 @@ public class InitializeCompany {
         company.addProduct(p6);
 
         //add users
-        Administrator a1 = new Administrator("Alice Admin", "alice@admin.com", "pw123");
-        //Customer c1 = new Customer();
-        //company.add
+        company.addAdmin("Alice Admin", "alice@admin.com", "pw123");
+        company.addCustomer("Charlie Customer", "charlie@customer.com", "456pw");
 
-        //add orders?
+        //add orders
+
+        //write to file
+        try{
+            FileOutputStream fileOut = new FileOutputStream(InitializeCompany.fileName);
+            ObjectOutputStream output = new ObjectOutputStream(fileOut);
+            output.writeObject(company);
+            output.flush();
+            System.out.printf("Wrote company to file %s\n", InitializeCompany.fileName);
+            output.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }

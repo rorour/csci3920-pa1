@@ -13,7 +13,8 @@ Team 2 Java PA1
 - [ ] Terminate
 
 ### Notes:
-Server/Client are communicating & sending Products successfully; the classes are super rough and need to be reorganized though
+10/28 : server can handle multiple concurrent clients!! :-)
+next : finish basic ClientWorker functions and integrate with GUIs?
 
 ## List of what we're doing
 #### Raven: Server/Client classes
