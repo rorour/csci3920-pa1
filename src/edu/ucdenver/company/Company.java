@@ -54,6 +54,17 @@ public class Company implements Serializable {
         }
     }
 
+    //Admin App can just send over User object
+    public void addUser(User newUser) throws IllegalArgumentException {
+        User tempUser = findUser(newUser.getDisplayName(), newUser.getEmail());
+        if(tempUser == null){
+            users.add(newUser);
+        }
+        else{
+            throw new IllegalArgumentException("Username and/or email is already taken");
+        }
+    }
+
     //Checks to see if user already exists in database. return null if empty
     public User findUser(String name, String email){
         if(!users.isEmpty()){
@@ -89,9 +100,29 @@ public class Company implements Serializable {
     public void removeProduct(Product p){
         catalog.removeIf(product -> product.equals(p));
     }
-    //todo i don't think we need these since product has its add/removecategory functions
-    public void addCategoryFromProduct(Product product){ }
-    public void removeCategoryFromProduct(Product product){}
+
+    //removes default category if another category has been added
+    public void addCategoryToProduct(Product product, Category category){
+        for (Product p : catalog){
+            if (product.equals(p)){
+                p.addCategory(category);
+                if (p.getCategories().size() > 1){
+                    p.removeCategory(defaultCategory);
+                }
+            }
+        }
+    }
+
+    public void removeCategoryFromProduct(Product product, Category category){
+        for (Product p : catalog){
+            if (product.equals(p)){
+                p.removeCategory(category);
+                if (p.getCategories().size() == 0){
+                    p.addCategory(defaultCategory);
+                }
+            }
+        }
+    }
 
     //============================================================================
     // 4. Product Category Management
@@ -115,9 +146,11 @@ public class Company implements Serializable {
                 break;
             }
         }
-        //note: needs to search all products that have this category and set it to default category for each product
     }
 
+    public void setDefaultCategory(Category defaultCategory) {
+        this.defaultCategory = defaultCategory;
+    }
     //============================================================================
     // 5. Browsing/Searching
     //searches both product name and description

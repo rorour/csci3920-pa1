@@ -5,7 +5,6 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,7 +15,9 @@ public class ServerApp {
     static private ObjectOutputStream output;
     static private ObjectInputStream input;
 
-    //make sure company gets initialized before running server
+    /**
+     * initializes company, either from file or new empty Company
+     */
     private static void initializeCompany(){
         Scanner sc = new Scanner(System.in);
         String fileName = "initialize.txt";
@@ -71,14 +72,39 @@ public class ServerApp {
         }
     }
 
-    private static Socket waitForClientConnection() throws IOException {
+    /**
+     * listens for new client connection.
+     * @return the new connection, or null if ServerSocket closed while listening.
+     */
+    private static Socket waitForClientConnection() {
         System.out.println("Waiting for a connection...");
-        Socket clientConnection = serverSocket.accept();
-        System.out.printf("Connection %d accepted from %s\n", ++connectionCounter,
-                clientConnection.getInetAddress().getHostName());
+        Socket clientConnection = null;
+        try {
+            clientConnection = serverSocket.accept();
+            System.out.printf("Connection %d accepted from %s\n", ++connectionCounter,
+                    clientConnection.getInetAddress().getHostName());
+        } catch (IOException e){
+            System.out.println("Stopped waiting for connection.");
+        }
         return clientConnection;
     }
 
+    /**
+     * write the updated company to file "savedcompany.txt".
+     */
+    private static void saveCompany() throws IOException {
+        String fileName = "savedcompany.txt";
+        FileOutputStream fileOut = new FileOutputStream(fileName);
+        ServerApp.output = new ObjectOutputStream(fileOut);
+        output.writeObject(company);
+        output.flush();
+        System.out.printf("Wrote company to file %s\n", fileName);
+        output.close();
+    }
+
+    /**
+     * starts server, creates threads for client connections, and shuts down once ServerSocket is closed.
+     */
     private static void runServer() throws IOException {
         int port = 10001;
         int backlog = 10;
@@ -91,23 +117,29 @@ public class ServerApp {
         ServerApp.serverSocket = new ServerSocket(port, backlog);
         ExecutorService executorService = Executors.newCachedThreadPool();
 
-        while(true){
-            //accept client connection
+        //accept client connections
+        while(!serverSocket.isClosed()){
             clientConnection = waitForClientConnection();
-
-            //create new thread for client
-            ClientWorker cw = new ClientWorker(clientConnection, connectionCounter);
-            executorService.execute(cw);
+            if (clientConnection != null){
+                //create new thread for client
+                ClientWorker cw = new ClientWorker(clientConnection, connectionCounter, serverSocket);
+                executorService.execute(cw);
+            }
         }
-        //ServerApp.company = ClientWorker.getCompany();
+        //serverSocket has been closed
+        System.out.println("Server shutting down.");
+
         //write company to file
-        //executorService.shutdown();
-        //executorService.awaitTermination();
-        //executorService.shutdownNow();
-        //serverSocket.close();
-        //shut down server
+        ServerApp.company = ClientWorker.getCompany();
+        ServerApp.saveCompany();
+
+        //shut down all client connections
+        executorService.shutdown();
     }
 
+    /**
+     * runs server app
+     */
     public static void main(String[] args){
         initializeCompany();
         try {

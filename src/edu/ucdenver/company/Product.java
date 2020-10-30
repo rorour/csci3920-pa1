@@ -55,6 +55,7 @@ public class Product implements Serializable {
     }
     public void addCategory(Category c){
         this.categories.add(c);
+
     }
     public void removeCategory(Category c){
         this.categories.removeIf(category -> category.equals(c));
