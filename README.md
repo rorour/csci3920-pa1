@@ -7,7 +7,7 @@ Team 2 Java PA1
 - [ ] Get Apps working
   - [ ] Store App with JavaFX GUI 
   - [ ] Admin App with JavaFX GUI
-  - [ ] Server App
+  - [X] Server App
 - [ ] Extra Credit
 - [X] Save/Load
 - [X] Terminate
