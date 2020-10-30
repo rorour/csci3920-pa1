@@ -18,7 +18,7 @@
 
 <GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ucdenver.admin.Controller">
    <children>
-      <Pane fx:id="paneConnectServer" disable="true" prefHeight="510.0" prefWidth="840.0" visible="false">
+      <Pane fx:id="paneConnectServer" disable="false" prefHeight="510.0" prefWidth="840.0" visible="true">
          <children>
             <GridPane layoutX="247.0" layoutY="233.0" prefHeight="117.0" prefWidth="273.0">
                <columnConstraints>
@@ -78,7 +78,7 @@
             </GridPane>
          </children>
       </Pane>
-      <Pane fx:id="paneCatalog" prefHeight="200.0" prefWidth="200.0">
+      <Pane fx:id="paneCatalog" disable="true" prefHeight="200.0" prefWidth="200.0" visible="false">
          <children>
             <TabPane prefHeight="556.0" prefWidth="840.0" tabClosingPolicy="UNAVAILABLE">
                <tabs>

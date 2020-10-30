@@ -4,6 +4,7 @@ import edu.ucdenver.company.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.util.concurrent.ExecutorService;
 
 public class ClientWorker implements Runnable {
@@ -71,6 +72,8 @@ public class ClientWorker implements Runnable {
                     case "order report":
                         adminOrderReport();
                         break;
+                    case "order report by date":
+                        adminOrderReportByDate();
                     case "terminate":
                         terminateServer = true;
                         keepRunningClient = false;
@@ -143,8 +146,14 @@ public class ClientWorker implements Runnable {
 
     }
 
-    private void adminOrderReport(){
-        //todo implement this
+    private void adminOrderReport() throws IOException {
+        output.writeObject(company.getOrders());
+    }
+
+    private void adminOrderReportByDate() throws IOException, ClassNotFoundException {
+        LocalDate date1 = (LocalDate)input.readObject();
+        LocalDate date2 = (LocalDate)input.readObject();
+        output.writeObject(company.listOrdersByDate(date1, date2));;
     }
 
     private void customerCommands(){
@@ -153,7 +162,6 @@ public class ClientWorker implements Runnable {
 
         while (keepRunningClient && clientConnection != null){
             try {
-                //todo implement customer commands
                 command = (String)input.readObject();
                 switch (command){
                     case "browse":
@@ -191,8 +199,27 @@ public class ClientWorker implements Runnable {
 
     }
 
-    private void customerOrder(){
-        //todo implement this
+    private void customerOrder() throws IOException, ClassNotFoundException {
+        String command = null;
+            command = (String) input.readObject();
+            switch (command) {
+                case "create order":
+                    break;
+                case "add product to order":
+                    break;
+                case "remove product from order":
+                    break;
+                case "list order products":
+                    break;
+                case "finalized order":
+                    break;
+                default:
+                    break;
+            }
+//            String s = null;
+//            s = company.listOrderReport((Customer) currentUser);
+
+            //todo implement this
     }
 
     /**
