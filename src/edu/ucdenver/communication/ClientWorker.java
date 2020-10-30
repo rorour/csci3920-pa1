@@ -71,17 +71,6 @@ public class ClientWorker implements Runnable {
                     case "order report":
                         adminOrderReport();
                         break;
-                    case "add product":
-                        //sample action - add product to catalog
-                        Product p = null;
-                        try {
-                            p = (Product) input.readObject();
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        System.out.printf("Client %d Sent Object:" + p, this.id);
-                        company.addProduct(p);
-                        break;
                     case "terminate":
                         terminateServer = true;
                         keepRunningClient = false;
@@ -158,16 +147,24 @@ public class ClientWorker implements Runnable {
         //todo implement this
     }
 
-
     private void customerCommands(){
         String command = null;
         boolean keepRunningClient = true;
 
         while (keepRunningClient && clientConnection != null){
             try {
+                //todo implement customer commands
                 command = (String)input.readObject();
                 switch (command){
-                    //todo add customer commands
+                    case "browse":
+                        customerBrowse();
+                        break;
+                    case "search":
+                        customerSearch();
+                        break;
+                    case "order management":
+                        customerOrder();
+                        break;
                     default:
                         sendMessage("1|Unknown command " + command);
                         break;
@@ -176,10 +173,27 @@ public class ClientWorker implements Runnable {
                 sendMessage("1|Error: " + e.getMessage());
             }
         }
+    }
+
+    private void customerBrowse() throws IOException, ClassNotFoundException {
+        //todo lists all the categories. Once a category is selected, will list all the products with that category.
+        //send over array list of all categories
+
+        //catalogapp will get selection from customer
+        //receive selection from customer
+        Category c = (Category)input.readObject();
+        //send over all products in category
+        company.browseCategory(c);
+    }
+
+    private void customerSearch(){
+        //todo will ask some search text, and will display all  products with that  in the product name or description. Search should be case-insensitive.
 
     }
 
-
+    private void customerOrder(){
+        //todo implement this
+    }
 
     /**
      * reads 2 strings from client, attempts to log in
