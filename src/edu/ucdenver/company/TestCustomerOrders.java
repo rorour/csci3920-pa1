@@ -28,8 +28,8 @@ public class TestCustomerOrders {
         Book p6 = new Book("The Illustrated Man", "1006", "Penguin",
                 "A paperback science fiction book.", LocalDate.of(1998,5,7), "Ray Bradbury",
                 LocalDate.of(1960,01,01), 150);
-        Product p7 = new Product("Teddy Bear", "1000", "Beanie Babies", "A stuffed brown bear.",
-                LocalDate.of(2011,10,10));
+//        Product p7 = new Product("Teddy Bear", "1000", "Beanie Babies", "A stuffed brown bear.",
+//                LocalDate.of(2011,10,10));
 
         Customer currentUser = null;
         try {

@@ -9,10 +9,11 @@ Team 2 Java PA1
   - [ ] Admin App with JavaFX GUI
   - [ ] Server App
 - [ ] Extra Credit
-- [ ] Save/Load
-- [ ] Terminate
+- [X] Save/Load
+- [X] Terminate
 
 ### Notes:
+Finally made Product class abstract, so i had to comment out all instances of it in test functions
 
 ## List of what we're doing
 #### Raven: Server/Client classes

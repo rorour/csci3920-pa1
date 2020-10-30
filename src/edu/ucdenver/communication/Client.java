@@ -73,12 +73,12 @@ public class Client {
 
                 Thread.sleep(5000);
 
-                Product p = new Product("Teddy Bear", "1001", "Beanie Babies", "A stuffed brown bear.",
-                        LocalDate.of(2020, 10,24));
+//                Product p = new Product("Teddy Bear", "1001", "Beanie Babies", "A stuffed brown bear.",
+//                        LocalDate.of(2020, 10,24));
                 System.out.println("Sending>>>>\n");
-                System.out.println(p);
+//                System.out.println(p);
 
-                output.writeObject(p);
+//                output.writeObject(p);
                 output.flush();
 
                 //System.out.println("\n<<<<Waiting for response>>>>\n");

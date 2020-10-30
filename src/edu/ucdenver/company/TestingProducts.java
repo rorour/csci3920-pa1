@@ -12,8 +12,8 @@ public class TestingProducts {
         //create products
 
         LocalDate today = LocalDate.of(2020,10,24);
-        Product p1 = new Product("Teddy Bear", "1001", "Beanie Babies", "A stuffed brown bear.",
-                today);
+//        Product p1 = new Product("Teddy Bear", "1001", "Beanie Babies", "A stuffed brown bear.",
+//                today);
         Electronic p2 = new Electronic("Flat Screen TV", "1002", "Sony",
                 "A 65\" flat screen television.", today, "9908213", 5);
         Computer p3 = new Computer("MacBook Pro", "1003", "Apple",
@@ -25,8 +25,8 @@ public class TestingProducts {
         Book p6 = new Book("The Illustrated Man", "1006", "Penguin",
                 "A paperback science fiction book.", today, "Ray Bradbury",
                 LocalDate.of(1960,01,01), 150);
-        Product p7 = new Product("Teddy Bear", "1000", "Beanie Babies", "A stuffed brown bear.",
-                today);
+//        Product p7 = new Product("Teddy Bear", "1000", "Beanie Babies", "A stuffed brown bear.",
+//                today);
         Book p8 = new Book("The Illustrated Man", "1006", "Pearson",
                 "A paperback science fiction book.", today, "R. Bradbury",
                 LocalDate.of(1960,01,01), 150);
@@ -45,13 +45,13 @@ public class TestingProducts {
         p6.addCategory(c5);
         p3.addCategory(c3);
         Company myCompany = new Company("My Company Name");
-        myCompany.addProduct(p1);
+//        myCompany.addProduct(p1);
         myCompany.addProduct(p2);
         myCompany.addProduct(p3);
         myCompany.addProduct(p4);
         myCompany.addProduct(p5);
         myCompany.addProduct(p6);
-        myCompany.addProduct(p7);
+//        myCompany.addProduct(p7);
         //myCompany.addProduct(p8);
 
 

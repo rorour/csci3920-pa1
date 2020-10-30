@@ -1,6 +1,7 @@
 package edu.ucdenver.communication;
 
 import edu.ucdenver.company.Administrator;
+import edu.ucdenver.company.Electronic;
 import edu.ucdenver.company.Product;
 
 import java.io.*;
@@ -94,18 +95,38 @@ public class Client2test {
 
 
                 }
-                System.out.println("Enter command(create new user): ");
+
+                System.out.println("Enter command(product management): ");
                 clientMessage = sc.nextLine();
                 output.writeObject(new String(clientMessage));
                 output.flush();
 
-                Administrator admin2 = new Administrator("Second Admin", "admin2@admin.com", "pw");
-                output.writeObject(admin2);
+                System.out.println("Enter command(add product): ");
+                clientMessage = sc.nextLine();
+                output.writeObject(new String(clientMessage));
+                output.flush();
+
+                Product p = new Electronic("Barbie Doll", "1010", "Mattel", "A Barbie doll.",
+                        LocalDate.of(2020, 10,24), "023902139120", 5);
+                output.writeObject(p);
                 output.flush();
 
                 clientMessage = "terminate";
                 output.writeObject(new String(clientMessage));
                 output.flush();
+
+//                System.out.println("Enter command(create new user): ");
+//                clientMessage = sc.nextLine();
+//                output.writeObject(new String(clientMessage));
+//                output.flush();
+//
+//                Administrator admin2 = new Administrator("Second Admin", "admin2@admin.com", "pw");
+//                output.writeObject(admin2);
+//                output.flush();
+//
+//                clientMessage = "terminate";
+//                output.writeObject(new String(clientMessage));
+//                output.flush();
 
 
 
@@ -115,8 +136,7 @@ public class Client2test {
 
 
 //            Thread.sleep(1000);
-//                Product p = new Product("Barbie Doll", "1010", "Mattel", "A Barbie doll.",
-//                        LocalDate.of(2020, 10,24));
+
 //                System.out.println("Sending>>>>\n");
 //                System.out.println(p);
 //
