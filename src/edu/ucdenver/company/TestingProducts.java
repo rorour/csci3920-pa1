@@ -2,6 +2,8 @@ package edu.ucdenver.company;
 
 import javafx.scene.control.Cell;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -156,24 +158,45 @@ public class TestingProducts {
         }
 
 
+        //test images
+        BufferedImage img;
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("src/");
+            sb.append(p2.getId());
+            sb.append(".jpg");
+            String imgName = sb.toString();
+            File imgFile = new File(imgName);
+            System.out.println(imgFile.getCanonicalPath());
+            img = ImageIO.read(imgFile);
+            System.out.print(img);
+        } catch (IOException e) {
+            try {
+                File imgFile = new File("src/edu/ucdenver/initialization/noImg.jpg");
+                img = ImageIO.read(imgFile);
+            } catch (IOException ioe){
+                System.out.println(ioe.getMessage());
+            }
+        }
+
         //testing reading/writing objects to/from file
 
-        try {
-            FileOutputStream fileOut = new FileOutputStream("myfile.txt");
-            ObjectOutputStream output = new ObjectOutputStream(fileOut);
-            ObjectInputStream input = null;
-            output.writeObject(p4);
-            output.flush();
-            System.out.println("Wrote object to file.");
-            output.close();
-            FileInputStream fileIn = new FileInputStream("myfile.txt");
-            input = new ObjectInputStream(fileIn);
-            CellPhone newPhone = (CellPhone)input.readObject();
-            System.out.println("Read from file" + newPhone);
-            input.close();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            FileOutputStream fileOut = new FileOutputStream("myfile.txt");
+//            ObjectOutputStream output = new ObjectOutputStream(fileOut);
+//            ObjectInputStream input = null;
+//            output.writeObject(p4);
+//            output.flush();
+//            System.out.println("Wrote object to file.");
+//            output.close();
+//            FileInputStream fileIn = new FileInputStream("myfile.txt");
+//            input = new ObjectInputStream(fileIn);
+//            CellPhone newPhone = (CellPhone)input.readObject();
+//            System.out.println("Read from file" + newPhone);
+//            input.close();
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

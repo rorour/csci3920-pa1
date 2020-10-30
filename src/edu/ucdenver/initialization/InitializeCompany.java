@@ -1,8 +1,9 @@
-package edu.ucdenver.company;
+package edu.ucdenver.initialization;
+
+import edu.ucdenver.company.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 

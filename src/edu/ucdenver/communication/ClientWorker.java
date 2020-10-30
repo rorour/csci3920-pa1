@@ -79,7 +79,7 @@ public class ClientWorker implements Runnable {
                         keepRunningClient = false;
                         break;
                     default:
-                        sendMessage("1|Unknown command " + command);
+                        sendMessage("1|Insufficient access or unknown command " + command);
                         break;
                 }
             } catch (IOException | ClassNotFoundException e){
@@ -174,7 +174,7 @@ public class ClientWorker implements Runnable {
                         customerOrder();
                         break;
                     default:
-                        sendMessage("1|Unknown command " + command);
+                        sendMessage("1|Insufficient access or unknown command " + command);
                         break;
                 }
             } catch (IOException | ClassNotFoundException e){

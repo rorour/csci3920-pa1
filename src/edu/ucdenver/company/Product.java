@@ -1,5 +1,9 @@
 package edu.ucdenver.company;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,7 +15,6 @@ public abstract class Product implements Serializable {
     private String description;
     private LocalDate incorporatedDate;
     private ArrayList<Category> categories;
-    //todo figure out how to add: private Image image;
 
     public Product(String name, String id, String brand, String description,
                    LocalDate incorporatedDate){
