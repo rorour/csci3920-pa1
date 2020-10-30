@@ -1,10 +1,12 @@
 package edu.ucdenver.communication;
 
+import edu.ucdenver.company.Administrator;
 import edu.ucdenver.company.Product;
 
 import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;
+import java.util.Scanner;
 
 
 /**TODO: implement Client class methods and place in its own package(?)
@@ -67,29 +69,69 @@ public class Client2test {
                 String serverMessage = (String)input.readObject();
                 System.out.println("Server Message:" + serverMessage);
 
-            output.writeObject(new String("charlie@customer.com"));
-            output.flush();
-            output.writeObject(new String("456pw"));
-            output.flush();
+                String clientMessage = null;
+                Scanner sc = new Scanner(System.in);
+
+                boolean loggedIn = false;
+                //login
+                while (!loggedIn){
+                    System.out.println("Enter email: ");
+                    clientMessage = sc.nextLine();
+                    output.writeObject(new String(clientMessage));
+                    output.flush();
+
+                    System.out.println("Enter password: ");
+                    clientMessage = sc.nextLine();
+                    output.writeObject(new String(clientMessage));
+                    output.flush();
+
+                    //get confirmation from server
+                    serverMessage = (String)input.readObject();
+                    System.out.println("Server Message:" + serverMessage);
+                    if (serverMessage.charAt(0) == '0'){
+                        loggedIn = true;
+                    }
 
 
-            Thread.sleep(1000);
-                Product p = new Product("Barbie Doll", "1010", "Mattel", "A Barbie doll.",
-                        LocalDate.of(2020, 10,24));
-                System.out.println("Sending>>>>\n");
-                System.out.println(p);
-
-                output.writeObject(p);
+                }
+                System.out.println("Enter command(create new user): ");
+                clientMessage = sc.nextLine();
+                output.writeObject(new String(clientMessage));
                 output.flush();
+
+                Administrator admin2 = new Administrator("Second Admin", "admin2@admin.com", "pw");
+                output.writeObject(admin2);
+                output.flush();
+
+                clientMessage = "terminate";
+                output.writeObject(new String(clientMessage));
+                output.flush();
+
+
+
+//                while (!clientMessage.equals("exit")){
+//
+//                }
+
+
+//            Thread.sleep(1000);
+//                Product p = new Product("Barbie Doll", "1010", "Mattel", "A Barbie doll.",
+//                        LocalDate.of(2020, 10,24));
+//                System.out.println("Sending>>>>\n");
+//                System.out.println(p);
+//
+//                output.writeObject(p);
+//                output.flush();
 
                 //System.out.println("\n<<<<Waiting for response>>>>\n");
 
             }
             catch (ClassNotFoundException e) {
                 e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+//            catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
         catch(IOException e){
             e.printStackTrace();

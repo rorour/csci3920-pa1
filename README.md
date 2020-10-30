@@ -13,8 +13,6 @@ Team 2 Java PA1
 - [ ] Terminate
 
 ### Notes:
-10/28 : server can handle multiple concurrent clients!! :-)
-next : finish basic ClientWorker functions and integrate with GUIs?
 
 ## List of what we're doing
 #### Raven: Server/Client classes
