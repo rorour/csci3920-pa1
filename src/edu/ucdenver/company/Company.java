@@ -1,3 +1,9 @@
+/** PA1
+ * Raven O'Rourke & Lora Kalthoff
+ *
+ * Company Class:
+ * Handles logging in users, product and category management, browsing/searching, customer orders, order report
+ */
 package edu.ucdenver.company;
 
 import java.io.Serializable;
@@ -5,10 +11,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 
-
-/**TODO: Add implementation to Company methods
- * Note: Only admins have access to product management
- */
 public class Company implements Serializable {
     private ArrayList<User> users;
     private ArrayList<Product> catalog;
@@ -32,7 +34,15 @@ public class Company implements Serializable {
     }
 
     //============================================================================
-    // 1 & 2. Create and Login Users
+    //              Create and Login Users
+    //============================================================================
+
+    /** Adds Customer to the users Arraylist
+     * @param name String : Name of the customer
+     * @param email String : customer's email address
+     * @param password String : customer's password
+     * @throws IllegalArgumentException  if username or email already exist in the users Arraylist
+     */
     public void addCustomer(String name, String email, String password) throws IllegalArgumentException {
         User tempUser = findUser(name, email);
         if(tempUser == null){
@@ -44,6 +54,12 @@ public class Company implements Serializable {
 
     }
 
+    /** Adds Adminitrator to the users Arraylist
+     * @param name String : Name of the admin
+     * @param email String : admin's email address
+     * @param password String : admin's password
+     * @throws IllegalArgumentException  if username or email already exists in the users Arraylist
+     */
     public void addAdmin(String name, String email, String password) throws IllegalArgumentException{
         User tempUser = findUser(name, email);
         if(tempUser == null){
@@ -55,6 +71,7 @@ public class Company implements Serializable {
     }
 
     //Admin App can just send over User object
+    //TODO: Thinking of deleting this object. It's adding a abstract User to users Arraylist right now
     public void addUser(User newUser) throws IllegalArgumentException {
         User tempUser = findUser(newUser.getDisplayName(), newUser.getEmail());
         if(tempUser == null){
@@ -65,7 +82,11 @@ public class Company implements Serializable {
         }
     }
 
-    //Checks to see if user already exists in database. return null if empty
+    /**Searches the users Arraylist for users where their name and/or email matches
+     * @param name String : name of the User
+     * @param email String : email of the User
+     * @return User that matches name and email. returns null if there is no match
+     */
     public User findUser(String name, String email){
         if(!users.isEmpty()){
             for(User u : users){
@@ -76,7 +97,13 @@ public class Company implements Serializable {
         }
         return null;
     }
-    //returns user if logged in properly.
+
+    /** Logins the user into the database
+     * @param email String : User's email address
+     * @param password String : User's password
+     * @return User with correct email and password
+     * @throws IllegalArgumentException if email or password is not correct
+     */
     public User loginUser(String email, String password) throws IllegalArgumentException{
         for(User user : this.users){
             if(user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)){
@@ -89,19 +116,31 @@ public class Company implements Serializable {
 
 
     //============================================================================
-    // 3. Product Management
-    //add new product to category
+    //              Product Management
+    //============================================================================
+
+    /** Add Product to the catalog arraylist.
+     * if there are no items in category, product will be assigned a default category
+     * @param p Product
+     */
     public void addProduct(Product p){
         if (p.getCategories().size() == 0){
             p.addCategory(this.defaultCategory);
         }
         this.catalog.add(p);
     }
+
+    /** Remove product from catalog
+     * @param p Product
+     */
     public void removeProduct(Product p){
         catalog.removeIf(product -> product.equals(p));
     }
 
-    //removes default category if another category has been added
+    /** Adds a Category to the Product, removes default category if another has been added
+     * @param product Product type
+     * @param category Category type
+     */
     public void addCategoryToProduct(Product product, Category category){
         for (Product p : catalog){
             if (product.equals(p)){
@@ -113,6 +152,10 @@ public class Company implements Serializable {
         }
     }
 
+    /** Removes specified Category from a product
+     * @param product Product type
+     * @param category Category type
+     */
     public void removeCategoryFromProduct(Product product, Category category){
         for (Product p : catalog){
             if (product.equals(p)){
@@ -125,9 +168,21 @@ public class Company implements Serializable {
     }
 
     //============================================================================
-    // 4. Product Category Management
+    //              Product Category Management
+    //============================================================================
+
+
+    /** Adds category to categories Arraylist
+     * @param category Category type
+     */
     public void addCategory(Category category){this.categories.add(category);}
-    public Category findCategory(String c){return null;} //for checking to see if it already exists in list
+
+    //TODO: we can delete this since we're not using it + no implementation
+    //public Category findCategory(String c){return null;} //for checking to see if it already exists in list
+
+    /** Removes a category and sets any product under that category to the default category
+     * @param categoryToRemove Category
+     */
     public void removeCategory(Category categoryToRemove){
         for (Category c : this.categories){
             if (c.equals(categoryToRemove)){
@@ -148,12 +203,20 @@ public class Company implements Serializable {
         }
     }
 
+    /** Sets the default category
+     * @param defaultCategory Category
+     */
     public void setDefaultCategory(Category defaultCategory) {
         this.defaultCategory = defaultCategory;
     }
     //============================================================================
-    // 5. Browsing/Searching
-    //searches both product name and description
+    //              Browsing and Searching
+    //============================================================================
+
+    /**searches both product name and description
+     * @param str String : used to match name and description of a product
+     * @return ArrayList of all matching products
+     */
     public ArrayList<Product> searchProducts(String str){
         ArrayList<Product> matchingProducts = new ArrayList<>();
         //todo make this search method more precise so it doesn't need a full string
@@ -165,7 +228,10 @@ public class Company implements Serializable {
         return matchingProducts;
     }
 
-    //returns all products in category
+    /** Searches catalog for all products under matching Category
+     * @param category Category
+     * @return ArrayList of matching products
+     */
     public ArrayList<Product> browseCategory(Category category){
         ArrayList<Product> productsInCategory = new ArrayList<>();
         for (Product p : catalog){
@@ -179,11 +245,20 @@ public class Company implements Serializable {
         return productsInCategory;}
 
     //============================================================================
-    // 6. Get Product details
+    //              Product Details
+    //============================================================================
+    //TODO: we can delete this
     public String showProductDetails(Product p){return "";} //shows all product information: use of toString will make this easy
 
+
     //============================================================================
-    // 7. Order Management
+    //              Order Management
+    //============================================================================
+
+    /** Creates an empty Open Order for a customer
+     * @param customer Customer
+     * @throws IllegalArgumentException if customer already has an open order
+     */
     public void createEmptyOrder(Customer customer) throws IllegalArgumentException {
         int orderNumber = createNewOrderNum();
         if(!customer.openOrderExists()){
@@ -192,7 +267,12 @@ public class Company implements Serializable {
             throw new IllegalArgumentException("Open order already exists");
         }
     }
-    //add product to order. will add product once, if customer requires the product more than once, will add multiple times
+
+    /** Add a Product to the Open Order for the Customer. Any duplicate order will be added to list
+     * @param customer Customer
+     * @param product Product
+     * @throws IllegalArgumentException if trying to add products to an order that does not exist
+     */
     public void addProductToOrder(Customer customer, Product product) throws IllegalArgumentException{
         if(customer.openOrderExists()){
             customer.getOpenOrder().addProduct(product);
@@ -202,7 +282,11 @@ public class Company implements Serializable {
         }
     }
 
-    //remove product from order. Will remove all instances of particular product from order
+    /** Remove product from customer's Open Order. Will remove all instances of particular product from order
+     * @param customer Customer
+     * @param product Product
+     * @throws IllegalArgumentException if trying to add products to an order that does not exist
+     */
     public void removeProductFromOrder(Customer customer, Product product) throws IllegalArgumentException{
         if(customer.openOrderExists()) {
             customer.getOpenOrder().removeProduct(product);
@@ -212,6 +296,11 @@ public class Company implements Serializable {
         }
     }
 
+    /** Lists all products (removes duplicates) in a customer's open order
+     * @param customer Customer
+     * @return Arraylist of all products the order
+     */
+    //TODO: Thinking about returning a map and have duplicate orders be counted. eg "ThisBook" x2
     public String listOrderProducts(Customer customer){
         ArrayList<Product> tempProducts = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
@@ -226,11 +315,14 @@ public class Company implements Serializable {
             for(Product p : tempProducts){
                 sb.append(p);
             }
-
         }
         return sb.toString();
     }
 
+    /** Finalizes the customer's order. Once finalized they won't be able to add/remove products to this order
+     * @param customer Customer
+     * @throws IllegalArgumentException if trying to finalize an order that does not exist
+     */
     public void finalizeOrder(Customer customer) throws IllegalArgumentException{
         if(customer.openOrderExists()){
             Order tempOrder = customer.getOpenOrder();
@@ -241,22 +333,34 @@ public class Company implements Serializable {
         else{
             throw new IllegalArgumentException("Open Order does not exist");
         }
-    }//once order is finalized, customer cannot add/remove products from it
+    }
 
+    /** Cancels the customer's current order. The order is deleted off the system.
+     * @param customer Customer
+     */
     public void cancelOrder(Customer customer){
         if(customer.openOrderExists()){
             customer.cancelOrder();
         }
-    } //if order is open, just delete it from the system.
+    }
 
+    /** Increments the order number each time an order is being made
+     * @return int
+     */
     private static int createNewOrderNum(){
         return orderNumbers++;
     }
 
 
     //============================================================================
-    // 8. Order Report
-    public String listOrderReport(Customer customer) throws IllegalArgumentException{
+    //              Order Report
+    //============================================================================
+
+    /** Lists all of the customers past (finalized) orders
+     * @param customer Customer
+     * @return String
+     */
+    public String listOrderReport(Customer customer){
        if(!customer.getFinalizedOrders().isEmpty()){
            StringBuilder sb = new StringBuilder();
            for(Order orders : customer.getFinalizedOrders()){
@@ -264,13 +368,23 @@ public class Company implements Serializable {
            }
            return sb.toString();
        }
-       else {
-           throw new IllegalArgumentException("There are no finalized orders");
+       else{
+           return "Empty List";
        }
     }
+
+    /** Returns the order list between two specified dates
+     * @param startDate LocalDate
+     * @param endDate LocalDate
+     * @return String
+     * @throws IllegalArgumentException if assigned endDate occurs before startDate
+     */
     //TODO: Right now it prints after and before specified dates (basically > and <, but not >= and <= )
     public String listOrdersByDate(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException{
         //ArrayList<Order> rangeOrderList = new ArrayList<>();
+        if(startDate.isAfter(endDate) || endDate.isBefore(startDate)){
+            throw new IllegalArgumentException("Assigned Start date is after End date");
+        }
         StringBuilder sb = new StringBuilder();
         if(!orders.isEmpty()){
             for(Order o : orders){
@@ -280,7 +394,7 @@ public class Company implements Serializable {
             }
             return sb.toString();
         } else {
-            throw new IllegalArgumentException("There are no finalized orders between " + startDate + " and " + endDate);
+            return "Empty List";
         }
 
     }
@@ -296,15 +410,11 @@ public class Company implements Serializable {
 
     }
 
-    //============================================================================
-    // 9. is for apps, but I'm putting it here as a reminder:
-    // Terminate server and save. Admin option
-
-
 
     public ArrayList<User> getUsers(){
         return this.users;
     }
+
     public ArrayList<Order> getOrders(){
         return this.orders;
     }
@@ -318,7 +428,6 @@ public class Company implements Serializable {
     public String getName(){
         return this.name;
     }
-
 
 
 

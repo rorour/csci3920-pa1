@@ -1,3 +1,9 @@
+/** PA1
+ * Raven O'Rourke & Lora Kalthoff
+ *
+ * User Abstract class:
+ * Parent class for Administrator and Customer class
+ */
 package edu.ucdenver.company;
 
 import java.io.Serializable;

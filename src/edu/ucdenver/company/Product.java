@@ -1,3 +1,10 @@
+/** PA1
+ * Raven O'Rourke & Lora Kalthoff
+ *
+ * Product Abstract class:
+ * Parent class for Book, Home, Electronic, Phone and Computer
+ */
+
 package edu.ucdenver.company;
 
 import java.io.Serializable;
@@ -57,6 +64,10 @@ public abstract class Product implements Serializable {
         this.categories.add(c);
 
     }
+
+    /** Removes category if equaled to parameter
+     * @param c Category type
+     */
     public void removeCategory(Category c){
         this.categories.removeIf(category -> category.equals(c));
     }

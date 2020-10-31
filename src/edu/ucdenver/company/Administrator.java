@@ -1,4 +1,10 @@
 package edu.ucdenver.company;
+/** PA1
+ * Raven O'Rourke & Lora Kalthoff
+ *
+ * Administrator class:
+ * inherits from User Abstract class
+ */
 
 import java.lang.reflect.AccessibleObject;
 

@@ -62,8 +62,16 @@ public class InitializeCompany {
         company.addAdmin("Alice Admin", "alice@admin.com", "pw123");
         company.addCustomer("Charlie Customer", "charlie@customer.com", "456pw");
 
-        //add orders
 
+        //temp login user
+        Customer tempCustomer = (Customer) company.loginUser("charlie@customer.com", "456pw");
+        //add orders
+        company.createEmptyOrder(tempCustomer);
+        company.addProductToOrder(tempCustomer, p2);
+        company.addProductToOrder(tempCustomer, p3);
+        company.finalizeOrder(tempCustomer);
+
+        tempCustomer = null;
         //write to file
         try{
             FileOutputStream fileOut = new FileOutputStream(InitializeCompany.fileName);

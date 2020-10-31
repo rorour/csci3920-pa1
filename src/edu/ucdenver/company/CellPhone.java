@@ -1,3 +1,9 @@
+/** PA1
+ * Raven O'Rourke & Lora Kalthoff
+ *
+ * CellPhone class:
+ * Inherits from Electronic class
+ */
 package edu.ucdenver.company;
 
 import java.time.LocalDate;

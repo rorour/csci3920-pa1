@@ -1,3 +1,9 @@
+/** PA1
+ * Raven O'Rourke & Lora Kalthoff
+ *
+ * Book class:
+ * Inherits from Product class
+ */
 package edu.ucdenver.company;
 
 import java.time.LocalDate;

@@ -1,3 +1,8 @@
+/** PA1
+ * Raven O'Rourke & Lora Kalthoff
+ *
+ * Category class:
+ */
 package edu.ucdenver.company;
 
 import java.io.Serializable;

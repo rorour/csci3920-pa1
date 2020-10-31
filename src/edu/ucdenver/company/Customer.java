@@ -1,10 +1,13 @@
+/** PA1
+ * Raven O'Rourke & Lora Kalthoff
+ *
+ * Customer class:
+ * Handles Customer and customer orders
+ * Inherits from User class
+ */
 package edu.ucdenver.company;
 
 import java.util.ArrayList;
-
-/**
- * TODO: revisit to see if correct implementation based on feedback
- */
 
 public class Customer extends User {
     private String name;
@@ -38,25 +41,30 @@ public class Customer extends User {
         this.address = address;
     }
 
+    /** Creates an open order for the Customer
+     * Changes order status to open/true
+     * @param orderNum the integer the current order is assigned given by company
+     */
     public void createOpenOrder(int orderNum) {
         this.openOrder = new Order(orderNum);
         openOrderStatus = true;
     }
 
+    /** Finalizes the open order for the Customer
+     * Adds order to list of finalized orders for Customer
+     * Changes order status to closed/false*/
     public void finalizeOpenOrder() {
         this.openOrder.finalizeOrder();
         this.finalizedOrders.add(this.openOrder);
         this.openOrderStatus = false;
     }
+
+    /**Cancels open order and initializes it to null*/
     public void cancelOrder(){
         this.openOrderStatus = false;
         this.openOrder = null;
 
 
-    }
-
-    public ArrayList<Order> listOrders() {
-        return this.finalizedOrders;
     }
 
     public Order getOpenOrder() {
@@ -68,7 +76,7 @@ public class Customer extends User {
     }
 
     public ArrayList<Order> getFinalizedOrders() {
-        return finalizedOrders;
+        return this.finalizedOrders;
     }
 
     @Override

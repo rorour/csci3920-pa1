@@ -1,10 +1,17 @@
+/** PA1
+ * Raven O'Rourke & Lora Kalthoff
+ *
+ * Order class:
+ * Handles orders adding/removing and listing products
+ */
 package edu.ucdenver.company;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Order {
+public class Order implements Serializable {
     private int orderNum;
     private String status; //open, finalize
     private LocalDate finalizedDate;
@@ -17,14 +24,19 @@ public class Order {
         products = new ArrayList<>();
     }
 
+    /** Add product to order
+     * @param p Product type */
     public void addProduct(Product p){
         products.add(p);
     }
 
+    /** Removes all instances of product in order
+     * @param product Product Type*/
     public void removeProduct(Product product){
         products.removeAll(Collections.singletonList(product));
     }
 
+    /** Changes status of the the order and retrieves current date */
     public void finalizeOrder(){
         this.status = "finalized";
         this.finalizedDate = LocalDate.now();
