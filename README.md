@@ -11,11 +11,19 @@ Team 2 Java PA1
 - [ ] Extra Credit
 - [X] Save/Load
 - [X] Terminate
+- [ ] Finalizing Project
+  - [ ] Adding Javadocs
+  - [ ] Go through TODOs
+  - [ ] Create README for Program (specifying what it does etc)
+  - [ ] General Cleanup
+
+
 
 ### Notes:
 Finally made Product class abstract, so i had to comment out all instances of it in test functions
 + I need to implement the tabs updating lists
++ I got javadocs on most of Company, need to go through and add them to the Controllers for the apps
 
 ## List of what we're doing
 #### Raven: Server/Client classes
-#### Lora: Will continue working on the catalog/admin apps and getting them to work. 
+#### Lora: Will continue working on the catalog/admin apps and getting them to work. Also finish the javadocs for Company and Controllers for apps. 
