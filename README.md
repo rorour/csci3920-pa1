@@ -5,8 +5,8 @@ Team 2 Java PA1
 - [ ] Implement Server, Client, ClientWorker
   - [X] Get client and server to communicate 
 - [ ] Get Apps working
-  - [ ] Store App with JavaFX GUI 
-  - [ ] Admin App with JavaFX GUI
+  - [X] Store App with JavaFX GUI 
+  - [X] Admin App with JavaFX GUI
   - [X] Server App
 - [ ] Extra Credit
 - [X] Save/Load
@@ -14,7 +14,8 @@ Team 2 Java PA1
 
 ### Notes:
 Finally made Product class abstract, so i had to comment out all instances of it in test functions
++ I need to implement the tabs updating lists
 
 ## List of what we're doing
 #### Raven: Server/Client classes
-#### Lora: Not sure yet, User login for store and admin app 
+#### Lora: Will continue working on the catalog/admin apps and getting them to work. 
