@@ -10,7 +10,7 @@ package edu.ucdenver.company;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
+//TODO: Fix the abstract: As of now, cannot access methods in derived classes
 public abstract class Product implements Serializable {
     private String name;
     private String id;
@@ -64,6 +64,12 @@ public abstract class Product implements Serializable {
         this.categories.add(c);
 
     }
+
+
+    public abstract String productType();
+
+
+
 
     /** Removes category if equaled to parameter
      * @param c Category type

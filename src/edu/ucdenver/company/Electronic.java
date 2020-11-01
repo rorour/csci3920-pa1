@@ -25,4 +25,9 @@ public class Electronic extends Product{
     public void setSerialNum(String serialNum){
         this.serialNum = serialNum;
     }
+
+    @Override
+    public String productType() {
+        return "Electronic";
+    }
 }

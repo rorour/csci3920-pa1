@@ -55,6 +55,8 @@ public class TestingProducts {
         //myCompany.addProduct(p8);
 
 
+
+
 //        System.out.println("Printing Catalog:");
 //        for (Product p : myCompany.getCatalog()){
 //            System.out.println(p);

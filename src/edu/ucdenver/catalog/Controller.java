@@ -1,5 +1,9 @@
 package edu.ucdenver.catalog;
 
+import edu.ucdenver.company.Category;
+import edu.ucdenver.company.Customer;
+import edu.ucdenver.company.Order;
+import edu.ucdenver.company.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,6 +20,7 @@ import java.io.ObjectOutputStream;
 import java.net.NoRouteToHostException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class Controller {
     public TextField textFieldServer;
@@ -45,6 +50,14 @@ public class Controller {
     public ListView listProducts;
     public ImageView imageProduct;
 
+    private ArrayList<Category> localCategory;
+    private ArrayList<Product> localProduct;
+    private Product selectedProduct;
+    private Category selectedCategory;
+    private Order selectedOrder;
+    private Customer currentCustomer;
+    private Alert alert;
+
     public Controller(){
         listProducts = new ListView<>();
         listCategories = new ListView<>();
@@ -62,10 +75,11 @@ public class Controller {
         paneCatalog.setDisable(false);
 
         //ChangeListener, oldValue and newValue need to change to the object
-        this.listProducts.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+        this.listProducts.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Product>() {
             @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            public void changed(ObservableValue observable, Product oldValue, Product newValue) {
                 if(newValue != null){
+                    selectedProduct = newValue;
 
                     //change image based on selected product's image and description
                     //imageProduct.setImage(new Image("image location")); //
@@ -75,10 +89,11 @@ public class Controller {
                 }
             }
         });
-        this.listCategories.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+        this.listCategories.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Product>() {
             @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            public void changed(ObservableValue observable, Product oldValue, Product newValue) {
                 if(newValue != null){
+                    //listProducts.setItems(FXCollections);
                     //shows products of specified category
                     //listProducts.setItems(FXCollections.observableArrayList(newValue));
                 }
@@ -88,8 +103,9 @@ public class Controller {
 
     public void connectToServer(ActionEvent actionEvent) {
         //connects to server
-        String ip = textFieldServer.getText();
-        int port = Integer.parseInt(textFieldPort.getText());
+        //TODO get rid of debug
+        String ip = "127.0.0.1";//textFieldServer.getText();
+        int port = 10001; //Integer.parseInt(textFieldPort.getText());
         Alert alert = null;
 
         try {
@@ -113,6 +129,7 @@ public class Controller {
             }
             alert = new Alert(Alert.AlertType.CONFIRMATION, servermessage);
             alert.show();
+
             paneConnectServer.setVisible(false);
             paneConnectServer.setDisable(true);
             paneLogin.setVisible(true);
@@ -121,10 +138,8 @@ public class Controller {
     }
 
     public void loginUser(ActionEvent actionEvent) {
-            String email = null;
-            String password = null;
-            email = textFieldEmail.getText();
-            password = passfieldPassword.getText();
+            String email = "charlie@customer.com"; //textFieldEmail.getText();
+            String password = "456pw"; //passfieldPassword.getText();
             Alert alert = null;
             String servermessage;
             boolean loggedIn = false;
@@ -150,10 +165,49 @@ public class Controller {
             paneLogin.setDisable(true);
             paneCatalog.setVisible(true);
             paneCatalog.setDisable(false);
+
         }
+    }
+    private boolean checkOrderStatus() throws IOException {
+        output.writeObject("order management");
+        output.flush();
+
+        output.writeObject("order status");
+        output.flush();
+        return input.readBoolean();
     }
 
     public void addToCart(ActionEvent actionEvent) {
+        Product p = selectedProduct;
+        try {
+            //creates an open order in case there isn't already one
+            if(!checkOrderStatus()){
+                output.writeObject("order management");
+                output.flush();
+
+                output.writeObject("create order");
+                output.flush();
+            }
+            output.writeObject("order management");
+            output.flush();
+
+            output.writeObject("add product to order");
+            output.flush();
+
+            output.writeObject(p);
+            output.flush();
+
+            //todo: updatelist with changes
+
+            alert = new Alert(Alert.AlertType.CONFIRMATION, p.getName() + " was added Successfully");
+            alert.show();
+        } catch (IOException e) {
+            alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.show();
+            e.printStackTrace();
+
+        }
+
         //If no existing open order, creates new one.
         //adds product to open order.
         //String product = listProducts.getSelectionModel().getSelectedItem(); //Need to convert to String for server

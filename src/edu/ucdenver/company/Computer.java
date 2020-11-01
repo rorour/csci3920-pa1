@@ -25,4 +25,9 @@ public class Computer extends Electronic{
     public void removeSpec(String spec){
         specs.removeIf(s -> s.equals(spec));
     }
+
+    @Override
+    public String productType() {
+        return "Computer";
+    }
 }

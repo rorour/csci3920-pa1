@@ -319,6 +319,10 @@ public class Company implements Serializable {
         return sb.toString();
     }
 
+    public ArrayList<Order> listCustomerFinalizedProducts(Customer customer){
+        return customer.getFinalizedOrders();
+    }
+
     /** Finalizes the customer's order. Once finalized they won't be able to add/remove products to this order
      * @param customer Customer
      * @throws IllegalArgumentException if trying to finalize an order that does not exist
@@ -358,46 +362,53 @@ public class Company implements Serializable {
 
     /** Lists all of the customers past (finalized) orders
      * @param customer Customer
-     * @return String
+     * @return ArrayList of Order(s)
      */
-    public String listOrderReport(Customer customer){
+    public ArrayList<Order> listOrderReport(Customer customer){
        if(!customer.getFinalizedOrders().isEmpty()){
-           StringBuilder sb = new StringBuilder();
-           for(Order orders : customer.getFinalizedOrders()){
-               sb.append(orders + "\n");
-           }
-           return sb.toString();
+           return customer.getFinalizedOrders();
        }
        else{
-           return "Empty List";
+           return null;
        }
     }
 
     /** Returns the order list between two specified dates
      * @param startDate LocalDate
      * @param endDate LocalDate
-     * @return String
+     * @return ArrayList of Order(s) between specified dates
      * @throws IllegalArgumentException if assigned endDate occurs before startDate
      */
-    //TODO: Right now it prints after and before specified dates (basically > and <, but not >= and <= )
-    public String listOrdersByDate(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException{
-        //ArrayList<Order> rangeOrderList = new ArrayList<>();
+
+    public ArrayList<Order> listOrdersByDate(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException{
+        ArrayList<Order> rangeOrderList = new ArrayList<>();
         if(startDate.isAfter(endDate) || endDate.isBefore(startDate)){
             throw new IllegalArgumentException("Assigned Start date is after End date");
         }
-        StringBuilder sb = new StringBuilder();
         if(!orders.isEmpty()){
-            for(Order o : orders){
-                if(o.getFinalizedDate().isAfter(startDate) && o.getFinalizedDate().isBefore(endDate)){
-                    sb.append(o + "\n");
+            //should be already sorted based on how orders are finalized by current date
+            for(Order o : this.orders){
+                if((o.getFinalizedDate().isEqual(startDate) || o.getFinalizedDate().isAfter(startDate))
+                        && (o.getFinalizedDate().isEqual(endDate) || o.getFinalizedDate().isBefore(endDate))){
+                    rangeOrderList.add(o);
+
                 }
             }
-            return sb.toString();
+            return rangeOrderList;
         } else {
-            return "Empty List";
+            return null;
         }
 
     }
+
+    /** Checks to see if the customer has an open order
+     * @param c Customer
+     * @return true if Open Order exists, false if not
+     */
+    public boolean hasOpenOrder(Customer c){
+        return c.openOrderExists();
+    }
+
     //TODO: delete this when finalizing project. Was for testing purposes only.
     public void testFinalizedOrders(){
         Order temp = null;

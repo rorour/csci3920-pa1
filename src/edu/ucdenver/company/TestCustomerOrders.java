@@ -1,6 +1,7 @@
 package edu.ucdenver.company;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class TestCustomerOrders {
     public static void main(String[] args) {
@@ -96,11 +97,14 @@ public class TestCustomerOrders {
 
             company.testFinalizedOrders();
             //System.out.println(company.getOrders());
-            String str = company.listOrdersByDate(LocalDate.of(2020, 1, 1),
-                    LocalDate.of(2020,4, 12));
+            ArrayList<Order> orders = company.listOrdersByDate(LocalDate.of(2020, 1, 1),LocalDate.of(2020,4, 1));
 
 
-            System.out.println("Orders finalized between Jan 1st to April 4th:\n" + str);
+            System.out.println("Orders finalized between Jan 1st to April 4th:\n");
+            for(Order o : orders ){
+                System.out.println(o);
+
+            }
 
 
 //

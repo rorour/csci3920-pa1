@@ -31,4 +31,9 @@ public class CellPhone extends Electronic{
     public void setOs(String os){
         this.os = os;
     }
+
+    @Override
+    public String productType() {
+        return "CellPhone";
+    }
 }

@@ -113,6 +113,10 @@ public class ClientWorker implements Runnable {
                 c = (Category) input.readObject();
                 company.removeCategoryFromProduct(p, c);
                 break;
+            case "list products":
+                output.writeObject(company.getCatalog());
+                output.flush();
+                break;
             default:
                 sendMessage("1|Unknown command " + command);
                 break;
@@ -142,12 +146,18 @@ public class ClientWorker implements Runnable {
                 c = (Category)input.readObject();
                 company.removeCategory(c);
                 break;
+            case "list categories":
+                output.writeObject(company.getCategories());
+                output.flush();
+                break;
+
         }
 
     }
 
     private void adminOrderReport() throws IOException {
         output.writeObject(company.getOrders());
+
     }
 
     private void adminOrderReportByDate() throws IOException, ClassNotFoundException {
@@ -172,6 +182,14 @@ public class ClientWorker implements Runnable {
                         break;
                     case "order management":
                         customerOrder();
+                        break;
+                    case "list all products":
+                        output.writeObject(company.getCatalog());
+                        output.flush();
+                        break;
+                    case "list categories":
+                        output.writeObject(company.getCategories());
+                        output.flush();
                         break;
                     default:
                         sendMessage("1|Unknown command " + command);
@@ -202,24 +220,39 @@ public class ClientWorker implements Runnable {
     private void customerOrder() throws IOException, ClassNotFoundException {
         String command = null;
             command = (String) input.readObject();
+            Product p = null;
             switch (command) {
                 case "create order":
+                    if(!company.hasOpenOrder((Customer) currentUser)){
+                        company.createEmptyOrder((Customer) currentUser);
+                    }
                     break;
                 case "add product to order":
+                    p = (Product)input.readObject();
+                    company.addProductToOrder((Customer) currentUser,p);
                     break;
                 case "remove product from order":
+                    p = (Product)input.readObject();
+                    company.removeProductFromOrder((Customer) currentUser, p);
                     break;
                 case "list order products":
+                    output.writeObject(company.listOrderProducts((Customer) currentUser));
                     break;
                 case "finalized order":
+                    company.finalizeOrder((Customer) currentUser);
                     break;
+                case "past orders":
+                    output.writeObject(company.listCustomerFinalizedProducts((Customer) currentUser));
+                    break;
+                case "order status":
+                    output.writeObject(company.hasOpenOrder((Customer) currentUser));
                 default:
                     break;
             }
 //            String s = null;
 //            s = company.listOrderReport((Customer) currentUser);
 
-            //todo implement this
+            // implement this
     }
 
     /**

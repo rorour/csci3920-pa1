@@ -62,7 +62,7 @@ public class Order implements Serializable {
         return finalizedDate;
     }
 
-    //TODO: Delete this when ready to finalize project. This is for testing purposes only
+    //: This is for testing purposes only
     public void setFinalizedDate(LocalDate ld){
         this.finalizedDate = ld;
     }

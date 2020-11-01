@@ -44,4 +44,9 @@ public class Book extends Product{
     public void setNumOfPages(int numOfPages) {
         this.numOfPages = numOfPages;
     }
+
+    @Override
+    public String productType() {
+        return "Book";
+    }
 }

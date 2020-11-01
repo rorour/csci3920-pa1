@@ -22,4 +22,9 @@ public class Home extends Product{
     public void setLocation(String location){
         this.location = location;
     }
+
+    @Override
+    public String productType() {
+        return "Home";
+    }
 }

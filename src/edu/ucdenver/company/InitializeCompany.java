@@ -71,6 +71,8 @@ public class InitializeCompany {
         company.addProductToOrder(tempCustomer, p3);
         company.finalizeOrder(tempCustomer);
 
+        company.testFinalizedOrders(); //for testing purposes only
+
         tempCustomer = null;
         //write to file
         try{
