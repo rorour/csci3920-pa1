@@ -82,7 +82,7 @@
          <children>
             <TabPane prefHeight="556.0" prefWidth="847.0" tabClosingPolicy="UNAVAILABLE">
                <tabs>
-                  <Tab text="Browse catalog">
+                  <Tab fx:id="tabBrowse" onSelectionChanged="#updateCatalog" text="Browse catalog">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="840.0">
                            <children>
@@ -154,13 +154,81 @@
                                        <rowConstraints>
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="tabSearch" onSelectionChanged="#updateSearchTab" text="Search">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="840.0">
+                           <children>
+                              <GridPane layoutY="10.0" prefHeight="514.0" prefWidth="840.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="745.0" minWidth="10.0" prefWidth="252.7999877929688" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="745.0" minWidth="10.0" prefWidth="437.6000122070312" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="172.0" minHeight="1.0" prefHeight="43.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="503.0" minHeight="10.0" prefHeight="485.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ListView fx:id="listProducts1" prefHeight="386.0" prefWidth="382.0" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" />
+                                       </GridPane.margin>
+                                    </ListView>
+                                    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints maxHeight="325.0" minHeight="10.0" prefHeight="295.8000152587891" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="325.0" minHeight="10.0" prefHeight="22.199984741210926" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="458.0" minHeight="0.0" prefHeight="106.79994812011716" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="458.0" minHeight="10.0" prefHeight="43.60000000000002" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <GridPane.margin>
+                                          <Insets right="5.0" />
+                                       </GridPane.margin>
                                        <children>
-                                          <Button fx:id="btnSearch" mnemonicParsing="false" onAction="#searchProduct" text="Search" GridPane.columnIndex="1">
+                                          <Label text="Description" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+                                          <Button fx:id="btnAddToCart1" mnemonicParsing="false" onAction="#addToCart" text="Add to Cart" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                                          <TextArea fx:id="textareaDescription1" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets right="5.0" top="5.0" />
+                                             </GridPane.margin>
+                                          </TextArea>
+                                          <ImageView fx:id="imageProduct1" fitHeight="280.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
+                                          </ImageView>
+                                       </children>
+                                    </GridPane>
+                                    <Label text="Products:" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets left="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <GridPane prefHeight="25.0" prefWidth="544.0" GridPane.columnIndex="1">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="311.2" minWidth="10.0" prefWidth="311.2" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="0.0" prefWidth="0.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <TextField fx:id="textSearch" />
+                                          <Button fx:id="btnSearch" mnemonicParsing="false" onAction="#searchProduct" text="Search" GridPane.columnIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
                                           </Button>
-                                          <TextField fx:id="textfieldSearch" prefHeight="26.0" prefWidth="159.0" />
                                        </children>
                                     </GridPane>
                                  </children>

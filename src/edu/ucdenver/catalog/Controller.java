@@ -8,6 +8,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,6 +50,12 @@ public class Controller {
     public ListView listCategories;
     public ListView listProducts;
     public ImageView imageProduct;
+    public Tab tabBrowse;
+    public Tab tabSearch;
+    public ListView listProducts1;
+    public Button btnAddToCart1;
+    public TextArea textareaDescription1;
+    public ImageView imageProduct1;
 
     private ArrayList<Category> localCategory;
     private ArrayList<Product> localProduct;
@@ -210,7 +217,6 @@ public class Controller {
 
         //If no existing open order, creates new one.
         //adds product to open order.
-        //String product = listProducts.getSelectionModel().getSelectedItem(); //Need to convert to String for server
         
     }
 
@@ -237,5 +243,11 @@ public class Controller {
         Stage stage = (Stage) this.btnExit.getScene().getWindow();
         //TODO: Close client safely in exitApplication
         stage.close();
+    }
+
+    public void updateCatalog(Event event) {
+    }
+
+    public void updateSearchTab(Event event) {
     }
 }

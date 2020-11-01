@@ -74,6 +74,7 @@ public class ClientWorker implements Runnable {
                         break;
                     case "order report by date":
                         adminOrderReportByDate();
+                        break;
                     case "terminate":
                         terminateServer = true;
                         keepRunningClient = false;
@@ -163,7 +164,7 @@ public class ClientWorker implements Runnable {
     private void adminOrderReportByDate() throws IOException, ClassNotFoundException {
         LocalDate date1 = (LocalDate)input.readObject();
         LocalDate date2 = (LocalDate)input.readObject();
-        output.writeObject(company.listOrdersByDate(date1, date2));;
+        output.writeObject(company.listOrdersByDate(date1, date2));
     }
 
     private void customerCommands(){

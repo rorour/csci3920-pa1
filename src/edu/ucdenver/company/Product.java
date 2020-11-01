@@ -69,8 +69,6 @@ public abstract class Product implements Serializable {
     public abstract String productType();
 
 
-
-
     /** Removes category if equaled to parameter
      * @param c Category type
      */
