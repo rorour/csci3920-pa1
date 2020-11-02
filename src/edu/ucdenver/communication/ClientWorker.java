@@ -111,16 +111,16 @@ public class ClientWorker implements Runnable {
                     company.addProduct(p);
                     sendMessage("0|Product added successfully");
                 } catch (IOException | ClassNotFoundException e) {
-                    sendMessage("1|Product was not added");
+                    sendMessage("1|Error on server side during add");
                 }
                 break;
             case "remove product":
                 try {
                     p = (Product)input.readObject();
                     company.removeProduct(p);
-                    sendMessage("0|Product added successfully");
+                    sendMessage("0|Product removed successfully");
                 } catch (IOException | ClassNotFoundException e) {
-                    sendMessage("1|Product was not added");
+                    sendMessage("1|Error on server side during removal");
                 }
                 break;
             case "add category to product":

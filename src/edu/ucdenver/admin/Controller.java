@@ -753,9 +753,6 @@ public class Controller {
     }
 
     public void removeProduct(ActionEvent actionEvent) {
-        alert = new Alert(Alert.AlertType.INFORMATION, "Remove product button clicked");
-        alert.showAndWait();
-
         Product p = null;
         try {
             p = selectedProduct;
@@ -772,15 +769,22 @@ public class Controller {
             alert.show();
         }
 
-//        try {
-//            output.writeObject("product management");
-//            output.flush();
-//
-//            output.writeObject("remove product");
-//            output.flush();
-//
-//            output.writeObject(p);
-//            output.flush();
+        try {
+            output.writeObject("product management");
+            output.flush();
+
+            output.writeObject("remove product");
+            output.flush();
+
+            output.writeObject(p);
+            output.flush();
+
+            serverMessage = (String) input.readObject();
+            alert = new Alert(Alert.AlertType.INFORMATION, serverMessage);
+            alert.show();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 //
 //            ArrayList<Product> pList = (ArrayList<Product>) input.readObject();
 //            localCategory = null;
@@ -788,19 +792,17 @@ public class Controller {
 //
 //            initialize();
 //            //listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
-//            //serverMessage = (String)input.readObject();
-//            alert = new Alert(Alert.AlertType.CONFIRMATION, "Success");
-//            alert.show();
+
 //        } catch (IOException | ClassNotFoundException e) {
 //            alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
 //            alert.show();
 //        }
-//
-//        try {
-//            updateAllProductLists();
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
+
+        try {
+            updateAllProductLists();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 //
 //
 
@@ -1072,8 +1074,20 @@ public class Controller {
     }
 
     public void updateTabRemoveProduct(Event event) {
-        boolean listupdated;
-        if(tabRemoveProduct.isSelected()){
+        if(this.tabRemoveProduct.isSelected()){
+            try{
+                output.writeObject("product management");
+                output.flush();
+                output.writeObject("list products");
+                output.flush();
+                ArrayList<Product> newProducts = (ArrayList<Product>) input.readObject();
+                alert = new Alert(Alert.AlertType.INFORMATION,
+                        "Updated products from server:" + newProducts.toString());
+                alert.show();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
             listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
 //            try {
 //                output.writeObject("product management");
