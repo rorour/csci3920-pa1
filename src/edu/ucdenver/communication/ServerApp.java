@@ -25,7 +25,7 @@ public class ServerApp {
         boolean companyInitialized = false;
 
         while (!startServer){
-            System.out.printf("Menu: \nA) Load Data from File \nB) Start Server\n");
+            System.out.printf("\nMenu: \nA) Load Data from File \nB) Start Server\n");
             String menuChoice = sc.nextLine();
             switch(menuChoice){
                 case "A":
@@ -42,11 +42,11 @@ public class ServerApp {
                         FileInputStream fileIn = new FileInputStream(fileName);
                         ServerApp.input = new ObjectInputStream(fileIn);
                         company = (Company)input.readObject();
-                        System.out.printf("Company %s initialized from file.\n", company.getName());
+                        System.out.printf("Company \"%s\" initialized from file.\n", company.getName());
                         input.close();
                     } catch (IOException ioe) {
-                        System.out.printf("Could not read from file %s\n", fileName);
-                        ioe.printStackTrace();
+                        System.out.printf("ERROR: Could not read from file %s\n", fileName);
+                        System.out.printf("Error thrown : %s\n", ioe.getMessage());
                         break;
                     } catch (ClassNotFoundException e){
                         System.out.printf("Class not found\n");
@@ -66,9 +66,13 @@ public class ServerApp {
         }
         //check if company is initialized; initialize if necessary
         if (!companyInitialized){
-            System.out.println("Company has not been initialized yet. Please name the company: \n");
+            System.out.println("Company has not been initialized yet. Please name the company:");
             String companyName = sc.nextLine();
             company = new Company(companyName);
+            Administrator a = new Administrator("Default Admin", "admin@admin.com", "pw");
+            company.addUser(a);
+            System.out.printf("Empty company \"%s\" has been created. Admin login is \"%s\" with password \"%s\"\n",
+                    company.getName(), a.getEmail(), a.getPassword());
         }
     }
 
@@ -141,6 +145,7 @@ public class ServerApp {
      * runs server app
      */
     public static void main(String[] args){
+        System.out.println("\n========================SERVER APP========================");
         initializeCompany();
         try {
             runServer();

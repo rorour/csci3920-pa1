@@ -56,12 +56,18 @@ public class ClientWorker implements Runnable {
         boolean keepRunningClient = true;
         boolean terminateServer = false;
 
-        while (keepRunningClient && clientConnection != null){
+        while (keepRunningClient){
             try {
                 command = (String)input.readObject();
                 switch (command){
                     case "create new user":
-                        adminNewUser();
+                        try {
+                            adminNewUser();
+                            sendMessage("0|User successfully added");
+                        } catch (IllegalArgumentException iae){
+                            sendMessage("1|" + iae.getMessage());
+                        }
+
                         break;
                     case "product management":
                         adminProductManagement();
@@ -77,6 +83,9 @@ public class ClientWorker implements Runnable {
                         break;
                     case "terminate":
                         terminateServer = true;
+                        keepRunningClient = false;
+                        break;
+                    case "close client":
                         keepRunningClient = false;
                         break;
                     default:
@@ -97,12 +106,22 @@ public class ClientWorker implements Runnable {
         Category c = null;
         switch(command){
             case "add product":
-                p = (Product)input.readObject();
-                company.addProduct(p);
+                try {
+                    p = (Product)input.readObject();
+                    company.addProduct(p);
+                    sendMessage("0|Product added successfully");
+                } catch (IOException | ClassNotFoundException e) {
+                    sendMessage("1|Product was not added");
+                }
                 break;
             case "remove product":
-                p = (Product)input.readObject();
-                company.removeProduct(p);
+                try {
+                    p = (Product)input.readObject();
+                    company.removeProduct(p);
+                    sendMessage("0|Product added successfully");
+                } catch (IOException | ClassNotFoundException e) {
+                    sendMessage("1|Product was not added");
+                }
                 break;
             case "add category to product":
                 p = (Product)input.readObject();
@@ -311,6 +330,7 @@ public class ClientWorker implements Runnable {
             }
 
             //disconnect client
+            System.out.printf("Closing connection #%d\n", this.id);
             clientConnection.close();
 
         } catch (IOException | IllegalArgumentException | ClassNotFoundException e) {

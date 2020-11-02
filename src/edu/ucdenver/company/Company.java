@@ -36,42 +36,10 @@ public class Company implements Serializable {
     //============================================================================
     //              Create and Login Users
     //============================================================================
-
-    /** Adds Customer to the users Arraylist
-     * @param name String : Name of the customer
-     * @param email String : customer's email address
-     * @param password String : customer's password
-     * @throws IllegalArgumentException  if username or email already exist in the users Arraylist
+    /** Adds User to the users Arraylist
+     * @param newUser takes user to add
+     * @throws IllegalArgumentException if username or email already exists in the users Arraylist
      */
-    public void addCustomer(String name, String email, String password) throws IllegalArgumentException {
-        User tempUser = findUser(name, email);
-        if(tempUser == null){
-            users.add(new Customer(name, email, password));
-        }
-        else{
-            throw new IllegalArgumentException("Username and/or email is already taken");
-        }
-
-    }
-
-    /** Adds Adminitrator to the users Arraylist
-     * @param name String : Name of the admin
-     * @param email String : admin's email address
-     * @param password String : admin's password
-     * @throws IllegalArgumentException  if username or email already exists in the users Arraylist
-     */
-    public void addAdmin(String name, String email, String password) throws IllegalArgumentException{
-        User tempUser = findUser(name, email);
-        if(tempUser == null){
-            users.add(new Administrator(name, email, password));
-        }
-        else{
-            throw new IllegalArgumentException("Username and/or email is already taken");
-        }
-    }
-
-    //Admin App can just send over User object
-    //TODO: Thinking of deleting this object. It's adding a abstract User to users Arraylist right now
     public void addUser(User newUser) throws IllegalArgumentException {
         User tempUser = findUser(newUser.getDisplayName(), newUser.getEmail());
         if(tempUser == null){

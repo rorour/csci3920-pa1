@@ -163,6 +163,22 @@ public class Controller {
 
     }
 
+    //todo this is testing calling on closing window
+    public void shutdown(){
+        System.out.println("Called shutdown");
+        if (this.serverConnection != null){
+            try {
+                output.writeObject("close client");
+                input.close();
+                output.close();
+                serverConnection.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     public void initialize() {
         //set default visibility
 
@@ -402,37 +418,43 @@ public class Controller {
     //========================================================
 
     public void addUser(ActionEvent actionEvent) {
-        String username = textAddUserName.getText();
-        String email = textAddUserEmail.getText();
-        String password = textAddUserPassword.getText();
+        String username = null;
+        String email = null;
+        String password = null;
+        try {
+            username = textAddUserName.getText();
+            email = textAddUserEmail.getText();
+            password = textAddUserPassword.getText();
+        } catch (IllegalArgumentException|NullPointerException iae){
+            alert = new Alert(Alert.AlertType.ERROR, "Fields may not have been filled out correctly");
+            alert.show();
+        }
 
         clientMessage = "create new user";
 
-
         try {
             if (secUserType.getValue().equals("Customer")) {
-                output.writeObject(new String(clientMessage));
+                output.writeObject(clientMessage);
                 output.flush();
                 output.writeObject(new Customer(username, email, password));
                 output.flush();
-                //TODO: Server needs to send a message in case a user already exists in database
-                //serverMessage = (String)input.readObject();
-                alert = new Alert(Alert.AlertType.CONFIRMATION, "User successfully added");
+                serverMessage = (String)input.readObject();
+                alert = new Alert(Alert.AlertType.CONFIRMATION, serverMessage);
                 alert.showAndWait();
                 cleanUsertext();
             } else if (secUserType.getValue().equals("Admin")) {
-                output.writeObject(new String(clientMessage));
+                output.writeObject(clientMessage);
                 output.flush();
                 output.writeObject(new Administrator(username, email, password));
                 output.flush();
-                //serverMessage = (String)input.readObject();
-                alert = new Alert(Alert.AlertType.CONFIRMATION, "User successfully added");
+                serverMessage = (String)input.readObject();
+                alert = new Alert(Alert.AlertType.CONFIRMATION, serverMessage);
                 alert.showAndWait();
                 cleanUsertext();
             } else {
                 alert = new Alert(Alert.AlertType.ERROR, "User type not selected");
             }
-        } catch (IllegalArgumentException | IOException e) {
+        } catch (IllegalArgumentException | NullPointerException | IOException | ClassNotFoundException e) {
             alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.show();
         }
@@ -571,14 +593,20 @@ public class Controller {
      * Sets Strings based on their respected textfields
      */
     private void setProductStrings() {
-        this.productName = this.textProductName.getText();
-        this.productId = this.textfieldProductID.getText();
-        this.productBrand = this.textfieldProductBrand.getText();
-        this.productIncorpDate = this.dateIncorporated.getValue(); //might need to convert to string
-        this.productDesc = this.textAreaProductDesc.getText();
-        this.productCategory = this.textSetCategory.getText();
-
-
+        try {
+            this.productName = this.textProductName.getText();
+            this.productId = this.textfieldProductID.getText();
+            this.productBrand = this.textfieldProductBrand.getText();
+            this.productIncorpDate = this.dateIncorporated.getValue(); //might need to convert to string
+            this.productDesc = this.textAreaProductDesc.getText();
+            //todo add category from drop down - i'm commenting this out for now
+            //this.productCategory = this.textSetCategory.getText();
+            this.productCategory = null;
+        } catch (IllegalArgumentException iae){
+            alert = new Alert(Alert.AlertType.ERROR, "Fields may not have been filled out correctly\n"
+                    + "Error thrown: " + iae.getMessage());
+            alert.show();
+        }
     }
     //TODO: Revise Confirmation/Error messages for each
 
@@ -596,17 +624,18 @@ public class Controller {
             output.writeObject(p);
             output.flush();
 
-            ArrayList<Product> pList = (ArrayList<Product>) input.readObject();
-            localCategory = null;
-            localProducts = pList;
+            serverMessage = (String)input.readObject();
 
-
-
-            alert = new Alert(Alert.AlertType.CONFIRMATION, "Success");
+            alert = new Alert(Alert.AlertType.CONFIRMATION, serverMessage);
             alert.showAndWait();
-            initialize();
-            //updateAllProductLists();
 
+            //todo what does the below do?
+//            ArrayList<Product> pList = (ArrayList<Product>) input.readObject();
+//            localCategory = null;
+//            localProducts = pList;
+ //initialize();
+            //updateAllProductLists();
+//| ClassNotFoundException
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
@@ -620,111 +649,160 @@ public class Controller {
         //string names: productName, productId, productBrand, productIncorpDate, productDesc, productCategory
         this.setProductStrings();
 
-        String author = this.textfieldAuthor.getText();
-        LocalDate publishDate = this.datePublication.getValue();
-        int numOfPages = Integer.parseInt(this.textfieldPages.getText());
+        try {
+            String author = this.textfieldAuthor.getText();
+            LocalDate publishDate = this.datePublication.getValue();
+            int numOfPages = Integer.parseInt(this.textfieldPages.getText());
 
-        Product p = new Book(this.productName, this.productId, this.productBrand, this.productDesc,
-                this.productIncorpDate, author, publishDate, numOfPages);
+            Product p = new Book(this.productName, this.productId, this.productBrand, this.productDesc,
+                    this.productIncorpDate, author, publishDate, numOfPages);
 
-        productMessage(p);
+            productMessage(p);
+        } catch (IllegalArgumentException iae){
+            alert = new Alert(Alert.AlertType.ERROR, "Fields may not have been filled out correctly\n"
+                    + "Error thrown: " +  iae.getMessage());
+            alert.show();
+        }
     }
 
     public void addHome(ActionEvent actionEvent) {
         //string names: productName, productId, productBrand, productIncorpDate, productDesc, productCategory
         this.setProductStrings();
-        String location = this.textfieldLocation.getText();
 
-        Product p = new Home(this.productName, this.productId, this.productBrand, this.productDesc,
-                this.productIncorpDate, location);
+        try {
+            String location = this.textfieldLocation.getText();
 
-        productMessage(p);
+            Product p = new Home(this.productName, this.productId, this.productBrand, this.productDesc,
+                    this.productIncorpDate, location);
 
+            productMessage(p);
+        } catch (IllegalArgumentException iae){
+        alert = new Alert(Alert.AlertType.ERROR, "Fields may not have been filled out correctly\n"
+                + "Error thrown: " + iae.getMessage());
+        alert.show();
+    }
     }
 
     public void addElectronic(ActionEvent actionEvent) {
         //string names: productName, productId, productBrand, productIncorpDate, productDesc, productCategory
         this.setProductStrings();
-        String serialNum = this.textfieldSerialNum.getText();
-        int warranty = Integer.parseInt(this.textfieldWarranty.getText());
+        try {
+            String serialNum = this.textfieldSerialNum.getText();
+            int warranty = Integer.parseInt(this.textfieldWarranty.getText());
 
-        Product p = new Electronic(this.productName, this.productId, this.productBrand, this.productDesc,
-                this.productIncorpDate, serialNum, warranty);
+            Product p = new Electronic(this.productName, this.productId, this.productBrand, this.productDesc,
+                    this.productIncorpDate, serialNum, warranty);
 
-        productMessage(p);
-
+            productMessage(p);
+        } catch (IllegalArgumentException iae){
+            alert = new Alert(Alert.AlertType.ERROR, "Fields may not have been filled out correctly\n"
+                    + "Error thrown: " + iae.getMessage());
+            alert.show();
+        }
     }
 
     public void addComputer(ActionEvent actionEvent) {
         //string names: productName, productId, productBrand, productIncorpDate, productDesc, productCategory
         this.setProductStrings();
-        String serialNum = this.textfieldSerialNum.getText();
-        int warranty = Integer.parseInt(this.textfieldWarranty.getText());
-        String specStr = this.textfieldSpecs.getText();
-        ArrayList<String> specs = new ArrayList<>();
+        try {
+            String serialNum = this.textfieldSerialNum.getText();
+            int warranty = Integer.parseInt(this.textfieldWarranty.getText());
+            String specStr = this.textfieldSpecs.getText();
+            ArrayList<String> specs = new ArrayList<>();
 
-        Computer p = new Computer(this.productName, this.productId, this.productBrand, this.productDesc,
-                this.productIncorpDate, serialNum, warranty);
+            Computer p = new Computer(this.productName, this.productId, this.productBrand, this.productDesc,
+                    this.productIncorpDate, serialNum, warranty);
 
 
-        //Creates an array list of given string, separated by them by commas
-        if (!specStr.isEmpty()) {
-            String[] specParts = specStr.split(",");
-            specs = new ArrayList<>(Arrays.asList(specParts));
-            for (String s : specs) {
-                p.addSpec(s);
+            //Creates an array list of given string, separated by them by commas
+            if (!specStr.isEmpty()) {
+                String[] specParts = specStr.split(",");
+                specs = new ArrayList<>(Arrays.asList(specParts));
+                for (String s : specs) {
+                    p.addSpec(s);
+                }
             }
+
+            productMessage(p);
+        } catch (IllegalArgumentException iae){
+            alert = new Alert(Alert.AlertType.ERROR, "Fields may not have been filled out correctly\n"
+                    + "Error thrown: " + iae.getMessage());
+            alert.show();
         }
-        productMessage(p);
+
     }
 
     public void addPhone(ActionEvent actionEvent) {
         //string names: productName, productId, productBrand, productIncorpDate, productDesc, productCategory
         this.setProductStrings();
-        String serialNum = this.textfieldSerialNum.getText();
-        int warranty = Integer.parseInt(this.textfieldWarranty.getText());
-        String imei = this.textfieldImei.getText();
-        String os = this.textfieldOS.getText();
-
-        Product p = new CellPhone(this.productName, this.productId, this.productBrand, this.productDesc,
-                this.productIncorpDate, serialNum, warranty, imei, os);
-
-        productMessage(p);
-
-    }
-    public void removeProduct(ActionEvent actionEvent) {
-        Product p = selectedProduct;
         try {
-            output.writeObject("product management");
-            output.flush();
+            String serialNum = this.textfieldSerialNum.getText();
+            int warranty = Integer.parseInt(this.textfieldWarranty.getText());
+            String imei = this.textfieldImei.getText();
+            String os = this.textfieldOS.getText();
 
-            output.writeObject("remove product");
-            output.flush();
+            Product p = new CellPhone(this.productName, this.productId, this.productBrand, this.productDesc,
+                    this.productIncorpDate, serialNum, warranty, imei, os);
 
-            output.writeObject(p);
-            output.flush();
-
-            ArrayList<Product> pList = (ArrayList<Product>) input.readObject();
-            localCategory = null;
-            this.localProducts = pList;
-
-            initialize();
-            //listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
-            //serverMessage = (String)input.readObject();
-            alert = new Alert(Alert.AlertType.CONFIRMATION, "Success");
+            productMessage(p);
+        } catch (IllegalArgumentException iae){
+            alert = new Alert(Alert.AlertType.ERROR, "Fields may not have been filled out correctly\n"
+                    + "Error thrown: " + iae.getMessage());
             alert.show();
-        } catch (IOException | ClassNotFoundException e) {
+        }
+    }
+
+    public void removeProduct(ActionEvent actionEvent) {
+        alert = new Alert(Alert.AlertType.INFORMATION, "Remove product button clicked");
+        alert.showAndWait();
+
+        Product p = null;
+        try {
+            p = selectedProduct;
+        } catch (Error e){
             alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.show();
         }
 
-        try {
-            updateAllProductLists();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        if (p == null){
+            alert = new Alert(Alert.AlertType.ERROR, "selected product is null");
+            alert.show();
+        } else {
+            alert = new Alert(Alert.AlertType.INFORMATION, "attempting to remove product " + p.getName());
+            alert.show();
         }
 
-
+//        try {
+//            output.writeObject("product management");
+//            output.flush();
+//
+//            output.writeObject("remove product");
+//            output.flush();
+//
+//            output.writeObject(p);
+//            output.flush();
+//
+//            ArrayList<Product> pList = (ArrayList<Product>) input.readObject();
+//            localCategory = null;
+//            this.localProducts = pList;
+//
+//            initialize();
+//            //listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
+//            //serverMessage = (String)input.readObject();
+//            alert = new Alert(Alert.AlertType.CONFIRMATION, "Success");
+//            alert.show();
+//        } catch (IOException | ClassNotFoundException e) {
+//            alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+//            alert.show();
+//        }
+//
+//        try {
+//            updateAllProductLists();
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//
 
     }
 
