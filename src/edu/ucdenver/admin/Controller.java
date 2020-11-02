@@ -163,15 +163,15 @@ public class Controller {
 
     }
 
-    //todo this is testing calling on closing window
     public void shutdown(){
-        System.out.println("Called shutdown");
+        System.out.println("Shutting down Admin App.");
         if (this.serverConnection != null){
             try {
                 output.writeObject("close client");
                 input.close();
                 output.close();
                 serverConnection.close();
+                System.out.println("Connection to server closed.");
             } catch (IOException e) {
                 e.printStackTrace();
             }

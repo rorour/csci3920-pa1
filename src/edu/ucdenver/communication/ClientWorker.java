@@ -280,9 +280,8 @@ public class ClientWorker implements Runnable {
      * sends client message starting with 0 if successful, 1 if error
      * @return true/false depending on if login successful
      */
-    private boolean attemptLogin(){
+    private boolean attemptLogin(String email){
         try {
-            String email = (String)input.readObject();
             String password = (String)input.readObject();
             this.currentUser = company.loginUser(email, password);
             sendMessage("0|Logged in as " + this.currentUser.getDisplayName());
@@ -317,16 +316,24 @@ public class ClientWorker implements Runnable {
             //attempt login
             boolean loggedIn = false;
             while (!loggedIn){
-                loggedIn = attemptLogin();
-            }
 
-            //check user permission & get client commands
-            if (currentUser.getAccessLevel().equals("admin")){
-                terminateServer = adminCommands();
-            } else if (currentUser.getAccessLevel().equals("customer")){
-                customerCommands();
-            } else {
-                throw new IllegalArgumentException("Unknown user permission");
+                //make sure that close command was not sent before login
+                String command = (String)input.readObject();
+                if (!command.equals("close client")){
+
+                    loggedIn = attemptLogin(command);
+
+                    //check user permission & get client commands
+                    if (currentUser.getAccessLevel().equals("admin")){
+                        terminateServer = adminCommands();
+                    } else if (currentUser.getAccessLevel().equals("customer")){
+                        customerCommands();
+                    } else {
+                        throw new IllegalArgumentException("Unknown user permission");
+                    }
+
+                } else
+                    break;
             }
 
             //disconnect client

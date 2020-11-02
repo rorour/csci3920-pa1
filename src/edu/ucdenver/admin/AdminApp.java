@@ -19,13 +19,11 @@ public class AdminApp extends Application {
         Controller controller = loader.getController();
 
         primaryStage.setOnCloseRequest(event -> {
-            System.out.println("Stage is closing");
             controller.shutdown();
             primaryStage.close();
         });
 
         primaryStage.show();
-
 
         ///original code
 //        Parent root = FXMLLoader.load(getClass().getResource("adminApplication.fxml"));
