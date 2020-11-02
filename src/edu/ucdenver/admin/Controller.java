@@ -127,6 +127,8 @@ public class Controller {
     private ArrayList<Product> localProducts;
     private ArrayList<Category> localCategory;
 
+    private boolean loggedIn;
+
 
     private Product selectedProduct;
     //TODO: Fix GUI in Scene Builder
@@ -155,21 +157,56 @@ public class Controller {
         serverMessage = null;
         alert = null;
 
+        loggedIn = false;
+
 
 
     }
 
     public void initialize() {
         //set default visibility
-        openServerPane();
-        closeLoginPane();
-        closeAdminPane();
 
         Book b;
         Electronic e;
         Computer c;
         CellPhone cp;
         Home h;
+        this.listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
+        if(loggedIn){
+//            this.lstStudent.setItems(FXCollections.observableArrayList(university.getStudents()));
+//            this.lstCourse.setItems(FXCollections.observableArrayList(university.getCourses()));
+            try {
+//                output.writeObject("product management");
+//                output.flush();
+//                output.writeObject("list products");
+//                output.flush();
+//                ArrayList<Product> p = (ArrayList<Product>) input.readObject();
+//                localCategory = null;
+//                localProducts = p;
+//                //update all the lists
+//                listProducts1.setItems(FXCollections.observableArrayList(p));
+//                listProducts2.setItems(FXCollections.observableArrayList(p));
+//                listProductToRemove.setItems(FXCollections.observableArrayList(p));
+
+                updateAllProductLists();
+                updateAllCategoryLists();
+                updateOrderLists();
+
+
+                openServerPane();
+                //closeLoginPane();
+                closeAdminPane();
+
+                closeServerPane();
+                openAdminPane();
+            } catch (IOException | ClassNotFoundException ioException) {
+                ioException.printStackTrace();
+            }
+        } else {
+            openServerPane();
+            closeLoginPane();
+            closeAdminPane();
+        }
 
 
         //initialize currentdefault
@@ -272,15 +309,6 @@ public class Controller {
             }
         });
 
-//        listFinalizedOrders.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Order>() {
-//            @Override
-//            public void changed(ObservableValue observable, Order oldValue, Order newValue) {
-//                textAreaOrderDetails.setText(newValue.getProducts().toString());
-//
-//            }
-//        });
-
-
 
     }
 
@@ -341,14 +369,15 @@ public class Controller {
             alert = new Alert(Alert.AlertType.CONFIRMATION, serverMessage);
             alert.showAndWait();
             if (serverMessage.charAt(0) == '0') {
-                loggedIn = true;
+                this.loggedIn = true;
+
             }
         } catch (IOException | ClassNotFoundException e) {
             alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.show();
         }
 
-        if (loggedIn) {
+        if (this.loggedIn) {
 
             //updates lists and comboboxes with initial values
             try {
@@ -567,10 +596,17 @@ public class Controller {
             output.writeObject(p);
             output.flush();
 
+            ArrayList<Product> pList = (ArrayList<Product>) input.readObject();
+            localCategory = null;
+            localProducts = pList;
+
+
+
             alert = new Alert(Alert.AlertType.CONFIRMATION, "Success");
             alert.showAndWait();
+            initialize();
+            //updateAllProductLists();
 
-            updateAllProductLists();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
@@ -667,10 +703,17 @@ public class Controller {
 
             output.writeObject(p);
             output.flush();
+
+            ArrayList<Product> pList = (ArrayList<Product>) input.readObject();
+            localCategory = null;
+            this.localProducts = pList;
+
+            initialize();
+            //listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
             //serverMessage = (String)input.readObject();
             alert = new Alert(Alert.AlertType.CONFIRMATION, "Success");
             alert.show();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.show();
         }
@@ -865,14 +908,7 @@ public class Controller {
         }
 
     }
-    public void updateProductManagement(Event event) {
-        if(tabProduct.isSelected()){
-            //update all the lists
-            listProducts1.setItems(FXCollections.observableArrayList(localProducts));
-            listProducts2.setItems(FXCollections.observableArrayList(localProducts));
-            listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
-        }
-    }
+
 
     public void updateRemoveCfromP(Event event) {
         if(this.tabRemoveCfromP.isSelected() && !secProductCategoryRemove.getSelectionModel().isEmpty()){
@@ -958,5 +994,25 @@ public class Controller {
     }
 
     public void updateTabRemoveProduct(Event event) {
+        boolean listupdated;
+        if(tabRemoveProduct.isSelected()){
+            listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
+//            try {
+//                output.writeObject("product management");
+//                output.flush();
+//                output.writeObject("list products");
+//                output.flush();
+//
+//                ArrayList<Product> c = (ArrayList<Product>) input.readObject();
+//
+//                localProducts = null;
+//                localProducts = c;
+//            } catch (IOException | ClassNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//
+//            listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
+//            listFinalizedOrders.getSelectionModel().select(0); //needs to be selected in order to
+        }
     }
 }
