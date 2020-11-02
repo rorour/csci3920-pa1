@@ -20,9 +20,9 @@ public class TestCustomerOrders {
         [X] show all orders from a specified time frame
          */
 
-        company.addCustomer("Lora", "lora@gmail.com", "testing");
-        company.addCustomer("David", "david@gmail.com", "74dfa");
-        company.addCustomer("Lisa", "lisa@yahoo.com", "f7asdf1f");
+//        company.addCustomer("Lora", "lora@gmail.com", "testing");
+//        company.addCustomer("David", "david@gmail.com", "74dfa");
+//        company.addCustomer("Lisa", "lisa@yahoo.com", "f7asdf1f");
 
         Home p5 = new Home("Couch", "1005", "IKEA", "A gray fabric couch.",
                 LocalDate.of(2020,6,5), "Living Room");

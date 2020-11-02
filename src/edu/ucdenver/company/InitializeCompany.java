@@ -59,8 +59,8 @@ public class InitializeCompany {
         company.addProduct(p6);
 
         //add users
-        company.addAdmin("Alice Admin", "alice@admin.com", "pw123");
-        company.addCustomer("Charlie Customer", "charlie@customer.com", "456pw");
+        company.addUser(new Administrator("Alice Admin", "alice@admin.com", "pw123"));
+        company.addUser(new Customer("Charlie Customer", "charlie@customer.com", "456pw"));
 
 
         //temp login user

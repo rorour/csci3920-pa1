@@ -15,6 +15,7 @@ public class Computer extends Electronic{
                     String serialNum, int warrantyPeriod)
     {
         super(name, id, brand, description, incorporatedDate, serialNum, warrantyPeriod);
+        specs = new ArrayList<>();
     }
     public ArrayList<String> getSpecs(){
         return specs;
