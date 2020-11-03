@@ -40,7 +40,7 @@ public class Company implements Serializable {
      * @param newUser takes user to add
      * @throws IllegalArgumentException if username or email already exists in the users Arraylist
      */
-    public void addUser(User newUser) throws IllegalArgumentException {
+    synchronized public void addUser(User newUser) throws IllegalArgumentException {
         User tempUser = findUser(newUser.getDisplayName(), newUser.getEmail());
         if(tempUser == null){
             users.add(newUser);
@@ -55,7 +55,7 @@ public class Company implements Serializable {
      * @param email String : email of the User
      * @return User that matches name and email. returns null if there is no match
      */
-    public User findUser(String name, String email){
+    synchronized public User findUser(String name, String email){
         if(!users.isEmpty()){
             for(User u : users){
                 if(u.getDisplayName().equals(name) || u.getEmail().equalsIgnoreCase(email)){
@@ -72,7 +72,7 @@ public class Company implements Serializable {
      * @return User with correct email and password
      * @throws IllegalArgumentException if email or password is not correct
      */
-    public User loginUser(String email, String password) throws IllegalArgumentException{
+    synchronized public User loginUser(String email, String password) throws IllegalArgumentException{
         for(User user : this.users){
             if(user.getEmail().equalsIgnoreCase(email) && user.getPassword().equals(password)){
                 return user;
@@ -91,7 +91,7 @@ public class Company implements Serializable {
      * if there are no items in category, product will be assigned a default category
      * @param p Product
      */
-    public void addProduct(Product p){
+    public synchronized void addProduct(Product p){
         if (p.getCategories().size() == 0){
             p.addCategory(this.defaultCategory);
         }
@@ -101,7 +101,8 @@ public class Company implements Serializable {
     /** Remove product from catalog
      * @param p Product
      */
-    public void removeProduct(Product p){
+    public synchronized void removeProduct(Product p){
+
         catalog.removeIf(product -> product.equals(p));
     }
 
@@ -109,7 +110,7 @@ public class Company implements Serializable {
      * @param product Product type
      * @param category Category type
      */
-    public void addCategoryToProduct(Product product, Category category){
+    synchronized public void addCategoryToProduct(Product product, Category category){
         for (Product p : catalog){
             if (product.equals(p)){
                 p.addCategory(category);
@@ -124,7 +125,7 @@ public class Company implements Serializable {
      * @param product Product type
      * @param category Category type
      */
-    public void removeCategoryFromProduct(Product product, Category category){
+    synchronized public void removeCategoryFromProduct(Product product, Category category){
         for (Product p : catalog){
             if (product.equals(p)){
                 p.removeCategory(category);
@@ -143,7 +144,7 @@ public class Company implements Serializable {
     /** Adds category to categories Arraylist
      * @param category Category type
      */
-    public void addCategory(Category category){this.categories.add(category);}
+    synchronized public void addCategory(Category category){this.categories.add(category);}
 
     //TODO: we can delete this since we're not using it + no implementation
     //public Category findCategory(String c){return null;} //for checking to see if it already exists in list
@@ -151,7 +152,7 @@ public class Company implements Serializable {
     /** Removes a category and sets any product under that category to the default category
      * @param categoryToRemove Category
      */
-    public void removeCategory(Category categoryToRemove){
+    synchronized public void removeCategory(Category categoryToRemove){
         for (Category c : this.categories){
             if (c.equals(categoryToRemove)){
                 //found desired category
@@ -174,7 +175,7 @@ public class Company implements Serializable {
     /** Sets the default category
      * @param defaultCategory Category
      */
-    public void setDefaultCategory(Category defaultCategory) {
+    synchronized public void setDefaultCategory(Category defaultCategory) {
         this.defaultCategory = defaultCategory;
     }
     //============================================================================
@@ -185,7 +186,7 @@ public class Company implements Serializable {
      * @param str String : used to match name and description of a product
      * @return ArrayList of all matching products
      */
-    public ArrayList<Product> searchProducts(String str){
+    synchronized public ArrayList<Product> searchProducts(String str){
         ArrayList<Product> matchingProducts = new ArrayList<>();
         //todo make this search method more precise so it doesn't need a full string
         for (Product p : catalog){
@@ -200,7 +201,7 @@ public class Company implements Serializable {
      * @param category Category
      * @return ArrayList of matching products
      */
-    public ArrayList<Product> browseCategory(Category category){
+    synchronized public ArrayList<Product> browseCategory(Category category){
         ArrayList<Product> productsInCategory = new ArrayList<>();
         for (Product p : catalog){
             for (Category c : p.getCategories()){
@@ -216,7 +217,7 @@ public class Company implements Serializable {
     //              Product Details
     //============================================================================
     //TODO: we can delete this
-    public String showProductDetails(Product p){return "";} //shows all product information: use of toString will make this easy
+    synchronized public String showProductDetails(Product p){return "";} //shows all product information: use of toString will make this easy
 
 
     //============================================================================
@@ -227,7 +228,7 @@ public class Company implements Serializable {
      * @param customer Customer
      * @throws IllegalArgumentException if customer already has an open order
      */
-    public void createEmptyOrder(Customer customer) throws IllegalArgumentException {
+    synchronized public void createEmptyOrder(Customer customer) throws IllegalArgumentException {
         int orderNumber = createNewOrderNum();
         if(!customer.openOrderExists()){
             customer.createOpenOrder(orderNumber);
@@ -241,7 +242,7 @@ public class Company implements Serializable {
      * @param product Product
      * @throws IllegalArgumentException if trying to add products to an order that does not exist
      */
-    public void addProductToOrder(Customer customer, Product product) throws IllegalArgumentException{
+    synchronized public void addProductToOrder(Customer customer, Product product) throws IllegalArgumentException{
         if(customer.openOrderExists()){
             customer.getOpenOrder().addProduct(product);
         }
@@ -255,7 +256,7 @@ public class Company implements Serializable {
      * @param product Product
      * @throws IllegalArgumentException if trying to add products to an order that does not exist
      */
-    public void removeProductFromOrder(Customer customer, Product product) throws IllegalArgumentException{
+    synchronized public void removeProductFromOrder(Customer customer, Product product) throws IllegalArgumentException{
         if(customer.openOrderExists()) {
             customer.getOpenOrder().removeProduct(product);
         }
@@ -269,7 +270,7 @@ public class Company implements Serializable {
      * @return Arraylist of all products the order
      */
     //TODO: Thinking about returning a map and have duplicate orders be counted. eg "ThisBook" x2
-    public String listOrderProducts(Customer customer){
+    synchronized public String listOrderProducts(Customer customer){
         ArrayList<Product> tempProducts = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         if(customer.openOrderExists()){
@@ -287,7 +288,7 @@ public class Company implements Serializable {
         return sb.toString();
     }
 
-    public ArrayList<Order> listCustomerFinalizedProducts(Customer customer){
+    synchronized public ArrayList<Order> listCustomerFinalizedProducts(Customer customer){
         return customer.getFinalizedOrders();
     }
 
@@ -295,7 +296,7 @@ public class Company implements Serializable {
      * @param customer Customer
      * @throws IllegalArgumentException if trying to finalize an order that does not exist
      */
-    public void finalizeOrder(Customer customer) throws IllegalArgumentException{
+    synchronized public void finalizeOrder(Customer customer) throws IllegalArgumentException{
         if(customer.openOrderExists()){
             Order tempOrder = customer.getOpenOrder();
             tempOrder.finalizeOrder();
@@ -310,7 +311,7 @@ public class Company implements Serializable {
     /** Cancels the customer's current order. The order is deleted off the system.
      * @param customer Customer
      */
-    public void cancelOrder(Customer customer){
+    synchronized public void cancelOrder(Customer customer){
         if(customer.openOrderExists()){
             customer.cancelOrder();
         }
@@ -319,7 +320,7 @@ public class Company implements Serializable {
     /** Increments the order number each time an order is being made
      * @return int
      */
-    private static int createNewOrderNum(){
+    synchronized private static int createNewOrderNum(){
         return orderNumbers++;
     }
 
@@ -332,7 +333,7 @@ public class Company implements Serializable {
      * @param customer Customer
      * @return ArrayList of Order(s)
      */
-    public ArrayList<Order> listOrderReport(Customer customer){
+    synchronized public ArrayList<Order> listOrderReport(Customer customer){
        if(!customer.getFinalizedOrders().isEmpty()){
            return customer.getFinalizedOrders();
        }
@@ -348,7 +349,7 @@ public class Company implements Serializable {
      * @throws IllegalArgumentException if assigned endDate occurs before startDate
      */
 
-    public ArrayList<Order> listOrdersByDate(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException{
+    synchronized public ArrayList<Order> listOrdersByDate(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException{
         ArrayList<Order> rangeOrderList = new ArrayList<>();
         if(startDate.isAfter(endDate) || endDate.isBefore(startDate)){
             throw new IllegalArgumentException("Assigned Start date is after End date");
@@ -373,12 +374,12 @@ public class Company implements Serializable {
      * @param c Customer
      * @return true if Open Order exists, false if not
      */
-    public boolean hasOpenOrder(Customer c){
+    synchronized public boolean hasOpenOrder(Customer c){
         return c.openOrderExists();
     }
 
     //TODO: delete this when finalizing project. Was for testing purposes only.
-    public void testFinalizedOrders(){
+    synchronized public void testFinalizedOrders(){
         Order temp = null;
         for(int i = 1; i < 13; i++){
             temp = new Order(createNewOrderNum());
@@ -390,21 +391,21 @@ public class Company implements Serializable {
     }
 
 
-    public ArrayList<User> getUsers(){
+    synchronized public ArrayList<User> getUsers(){
         return this.users;
     }
 
-    public ArrayList<Order> getOrders(){
+    synchronized public ArrayList<Order> getOrders(){
         return this.orders;
     }
-    public ArrayList<Product> getCatalog(){
+    synchronized public ArrayList<Product> getCatalog(){
         return this.catalog;
     }
-    public ArrayList<Category> getCategories(){
+    synchronized public ArrayList<Category> getCategories(){
         return this.categories;
     }
 
-    public String getName(){
+    synchronized public String getName(){
         return this.name;
     }
 
