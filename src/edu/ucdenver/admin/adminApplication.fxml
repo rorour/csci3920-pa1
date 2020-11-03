@@ -105,13 +105,19 @@
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Button fx:id="btnTerminate" mnemonicParsing="false" onAction="#terminateServer" text="Save and Terminate Server" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                    <Button fx:id="btnTerminate" mnemonicParsing="false" onAction="#terminateServer" text="Terminate Server and Save to File" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                                     <Label text="Administrator App" textFill="#2c6ed4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                        <font>
                                           <Font size="38.0" />
+                                       </font>
+                                    </Label>
+                                    <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="20.0" prefWidth="596.0" text="To exit without terminating server, just exit this window. " textFill="#2c6ed4" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="16.0" />
                                        </font>
                                     </Label>
                                  </children>

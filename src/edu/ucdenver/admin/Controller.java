@@ -204,8 +204,9 @@ public class Controller {
 //                listProducts2.setItems(FXCollections.observableArrayList(p));
 //                listProductToRemove.setItems(FXCollections.observableArrayList(p));
 
-                updateAllProductLists();
-                updateAllCategoryLists();
+                //todo commented out to test updating
+                //updateAllProductLists();
+                //updateAllCategoryLists();
                 updateOrderLists();
 
 
@@ -397,8 +398,8 @@ public class Controller {
 
             //updates lists and comboboxes with initial values
             try {
-                updateAllProductLists();
-                updateAllCategoryLists();
+                //updateAllProductLists();
+                //CategoryLists();
                 updateOrderLists();
 
             } catch (IOException | ClassNotFoundException e) {
@@ -1084,9 +1085,12 @@ public class Controller {
                 alert = new Alert(Alert.AlertType.INFORMATION,
                         "Updated products from server:" + newProducts.toString());
                 alert.show();
+                for (Product p: newProducts)
+                    System.out.println(p);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
+
 
             listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
 //            try {

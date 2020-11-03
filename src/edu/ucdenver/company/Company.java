@@ -102,6 +102,7 @@ public class Company implements Serializable {
      * @param p Product
      */
     public synchronized void removeProduct(Product p){
+
         catalog.removeIf(product -> product.equals(p));
     }
 

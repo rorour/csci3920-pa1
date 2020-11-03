@@ -136,6 +136,12 @@ public class ClientWorker implements Runnable {
             case "list products":
                 output.writeObject(company.getCatalog());
                 output.flush();
+                output.reset();
+
+                System.out.println("List products called");
+
+                for (Product prod : company.getCatalog())
+                    System.out.println(prod);
                 break;
             default:
                 sendMessage("1|Unknown command " + command);
@@ -169,6 +175,7 @@ public class ClientWorker implements Runnable {
             case "list categories":
                 output.writeObject(company.getCategories());
                 output.flush();
+                output.reset();
                 break;
 
         }
@@ -177,13 +184,16 @@ public class ClientWorker implements Runnable {
 
     private void adminOrderReport() throws IOException {
         output.writeObject(company.getOrders());
-
+        output.flush();
+        output.reset();
     }
 
     private void adminOrderReportByDate() throws IOException, ClassNotFoundException {
         LocalDate date1 = (LocalDate)input.readObject();
         LocalDate date2 = (LocalDate)input.readObject();
         output.writeObject(company.listOrdersByDate(date1, date2));
+        output.flush();
+        output.reset();
     }
 
     private void customerCommands(){
@@ -206,10 +216,12 @@ public class ClientWorker implements Runnable {
                     case "list all products":
                         output.writeObject(company.getCatalog());
                         output.flush();
+                        output.reset();
                         break;
                     case "list categories":
                         output.writeObject(company.getCategories());
                         output.flush();
+                        output.reset();
                         break;
                     default:
                         sendMessage("1|Unknown command " + command);
@@ -230,11 +242,14 @@ public class ClientWorker implements Runnable {
         Category c = (Category)input.readObject();
         //send over all products in category
         company.browseCategory(c);
+//        output.flush();
+//        output.reset();
     }
 
     private void customerSearch(){
         //todo will ask some search text, and will display all  products with that  in the product name or description. Search should be case-insensitive.
-
+//        output.flush();
+//        output.reset();
     }
 
     private void customerOrder() throws IOException, ClassNotFoundException {
@@ -257,22 +272,24 @@ public class ClientWorker implements Runnable {
                     break;
                 case "list order products":
                     output.writeObject(company.listOrderProducts((Customer) currentUser));
+                    output.flush();
+                    output.reset();
                     break;
                 case "finalized order":
                     company.finalizeOrder((Customer) currentUser);
                     break;
                 case "past orders":
                     output.writeObject(company.listCustomerFinalizedProducts((Customer) currentUser));
+                    output.flush();
+                    output.reset();
                     break;
                 case "order status":
                     output.writeObject(company.hasOpenOrder((Customer) currentUser));
+                    output.flush();
+                    output.reset();
                 default:
                     break;
             }
-//            String s = null;
-//            s = company.listOrderReport((Customer) currentUser);
-
-            // implement this
     }
 
     /**
