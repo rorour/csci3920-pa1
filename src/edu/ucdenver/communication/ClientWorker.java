@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.util.concurrent.ExecutorService;
+import java.util.Collections;
 
 public class ClientWorker implements Runnable {
     //same company object used by every clientworker
@@ -224,6 +225,9 @@ public class ClientWorker implements Runnable {
                         output.flush();
                         output.reset();
                         break;
+                    case "close client":
+                        keepRunningClient = false;
+                        break;
                     default:
                         sendMessage("1|Unknown command " + command);
                         break;
@@ -235,22 +239,17 @@ public class ClientWorker implements Runnable {
     }
 
     private void customerBrowse() throws IOException, ClassNotFoundException {
-        //todo lists all the categories. Once a category is selected, will list all the products with that category.
-        //send over array list of all categories
-
-        //catalogapp will get selection from customer
-        //receive selection from customer
         Category c = (Category)input.readObject();
-        //send over all products in category
-        company.browseCategory(c);
-//        output.flush();
-//        output.reset();
+        output.writeObject(company.browseCategory(c));
+        output.flush();
+
     }
 
-    private void customerSearch(){
-        //todo will ask some search text, and will display all  products with that  in the product name or description. Search should be case-insensitive.
-//        output.flush();
-//        output.reset();
+    private void customerSearch() throws IOException, ClassNotFoundException {
+        String str = (String) input.readObject();
+        output.writeObject(company.searchProducts(str));
+        output.flush();
+        output.reset();
     }
 
     private void customerOrder() throws IOException, ClassNotFoundException {
@@ -264,12 +263,22 @@ public class ClientWorker implements Runnable {
                     }
                     break;
                 case "add product to order":
+                    if(!company.hasOpenOrder((Customer) currentUser)){
+                        company.createEmptyOrder((Customer) currentUser);
+                    }
                     p = (Product)input.readObject();
                     company.addProductToOrder((Customer) currentUser,p);
                     break;
                 case "remove product from order":
                     p = (Product)input.readObject();
-                    company.removeProductFromOrder((Customer) currentUser, p);
+                    try{
+                        company.removeProductFromOrder((Customer) currentUser, p);
+                        sendMessage("0| Product successfully removed");
+                    }
+                    catch(IllegalArgumentException iae){
+                        sendMessage("1|" + iae);
+                    }
+                    //todo: product not being removed from database even on server side, might be my method in Order class
                     break;
                 case "list order products":
                     output.writeObject(company.listOrderProducts((Customer) currentUser));
@@ -277,12 +286,28 @@ public class ClientWorker implements Runnable {
                     output.reset();
                     break;
                 case "finalized order":
-                    company.finalizeOrder((Customer) currentUser);
+                    try{
+                        company.finalizeOrder((Customer) currentUser);
+                        sendMessage("0| Order Successfully Finalized");
+                    }
+                    catch(IllegalArgumentException iae){
+                        sendMessage("1| Error on server side during finalizing order: " + iae);
+
+                    }
+
                     break;
                 case "past orders":
                     output.writeObject(company.listCustomerFinalizedProducts((Customer) currentUser));
                     output.flush();
                     output.reset();
+                    break;
+                case "cancel order":
+                    try{
+                        company.cancelOrder((Customer) currentUser);
+                        sendMessage("0|Order Canceled Successfully");
+                    } catch(IllegalArgumentException e){
+                        sendMessage("1|Error on server side during removal");
+                    }
                     break;
                 case "order status":
                     output.writeObject(company.hasOpenOrder((Customer) currentUser));

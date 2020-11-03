@@ -9,6 +9,8 @@ package edu.ucdenver.company;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Company implements Serializable {
@@ -188,9 +190,13 @@ public class Company implements Serializable {
      */
     synchronized public ArrayList<Product> searchProducts(String str){
         ArrayList<Product> matchingProducts = new ArrayList<>();
-        //todo make this search method more precise so it doesn't need a full string
+        String lowerCaseName;
+        String lowerCaseDesc;
         for (Product p : catalog){
-            if (p.getName().contains(str) || p.getDescription().contains(str)){
+            //Makes the searches case-insensitive
+            lowerCaseName = p.getName().toLowerCase();
+            lowerCaseDesc = p.getDescription().toLowerCase();
+            if (lowerCaseName.contains(str) || lowerCaseDesc.contains(str)){
                 matchingProducts.add(p);
             }
         }
@@ -216,7 +222,7 @@ public class Company implements Serializable {
     //============================================================================
     //              Product Details
     //============================================================================
-    //TODO: we can delete this
+    //TODO: OK, so, definitely use this. will revisit later if time
     synchronized public String showProductDetails(Product p){return "";} //shows all product information: use of toString will make this easy
 
 
@@ -270,9 +276,9 @@ public class Company implements Serializable {
      * @return Arraylist of all products the order
      */
     //TODO: Thinking about returning a map and have duplicate orders be counted. eg "ThisBook" x2
-    synchronized public String listOrderProducts(Customer customer){
+    synchronized public ArrayList<Product> listOrderProducts(Customer customer){
         ArrayList<Product> tempProducts = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
+        ArrayList<Product> newProductList = new ArrayList<>();
         if(customer.openOrderExists()){
             //makes new tempProduct list without duplicates
             for(Product p : customer.getOpenOrder().getProducts()){
@@ -282,10 +288,10 @@ public class Company implements Serializable {
             }
             //Now makes the string of products
             for(Product p : tempProducts){
-                sb.append(p);
+                newProductList.add(p);
             }
         }
-        return sb.toString();
+        return newProductList;
     }
 
     synchronized public ArrayList<Order> listCustomerFinalizedProducts(Customer customer){
@@ -348,7 +354,6 @@ public class Company implements Serializable {
      * @return ArrayList of Order(s) between specified dates
      * @throws IllegalArgumentException if assigned endDate occurs before startDate
      */
-
     synchronized public ArrayList<Order> listOrdersByDate(LocalDate startDate, LocalDate endDate) throws IllegalArgumentException{
         ArrayList<Order> rangeOrderList = new ArrayList<>();
         if(startDate.isAfter(endDate) || endDate.isBefore(startDate)){
@@ -378,7 +383,7 @@ public class Company implements Serializable {
         return c.openOrderExists();
     }
 
-    //TODO: delete this when finalizing project. Was for testing purposes only.
+    /** DEBUG: Creates a list of finalized orders of different dates*/
     synchronized public void testFinalizedOrders(){
         Order temp = null;
         for(int i = 1; i < 13; i++){
