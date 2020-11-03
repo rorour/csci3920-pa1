@@ -1,8 +1,9 @@
-package edu.ucdenver.company;
+package edu.ucdenver.initialization;
+
+import edu.ucdenver.company.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 
@@ -73,7 +74,11 @@ public class InitializeCompany {
 
         company.testFinalizedOrders(); //for testing purposes only
 
-        tempCustomer = null;
+        //add photos
+        for (Product p : company.getCatalog()){
+            p.setPhoto(String.format("src/edu/ucdenver/initialization/%s.jpg", p.getId()));
+        }
+
         //write to file
         try{
             FileOutputStream fileOut = new FileOutputStream(InitializeCompany.fileName);

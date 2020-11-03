@@ -6,13 +6,22 @@ import edu.ucdenver.company.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -110,6 +119,7 @@ public class Controller {
     public Tab tabProduct;
     public ImageView imageProduct;
     public TextArea textAreaProductDetails;
+    public ImageView imgProductPhoto;
 
     private String productName;
     private String productId;
@@ -212,8 +222,19 @@ public class Controller {
                 if(newValue != null){
                     selectedProduct = newValue;
                     textAreaProductDetails.setText(toggleDescription(newValue)); //could also be newValue
+                    //NEW displaying image code!
+                    BufferedImage bi = new BufferedImage(
+                            selectedProduct.getPhoto().getIconWidth(),
+                            selectedProduct.getPhoto().getIconHeight(),
+                            BufferedImage.TYPE_INT_RGB);
+                    Graphics g = bi.createGraphics();
+                    selectedProduct.getPhoto().paintIcon(null, g, 0,0);
+                    g.dispose();
+                    WritableImage wi = new WritableImage(selectedProduct.getPhoto().getIconWidth(), selectedProduct.getPhoto().getIconHeight());
+                    SwingFXUtils.toFXImage(bi, wi);
+                    imgProductPhoto.setImage(wi);
+                    //end displaying image
                 }
-
             }
         });
 
@@ -1031,10 +1052,6 @@ public class Controller {
         listProductForRemoveCategory.setItems(FXCollections.observableArrayList(p));
         listProductToRemove.setItems(FXCollections.observableArrayList(p));
 
-//        listProducts1.getSelectionModel().select(0);
-//        listProducts2.getSelectionModel().select(0);
-//        listProductToRemove.getSelectionModel().select(0);
-        //System.out.println(p);
     }
 
     public void updateAllCategoryLists() throws IOException, ClassNotFoundException {
@@ -1073,33 +1090,10 @@ public class Controller {
                 output.writeObject("list products");
                 output.flush();
                 ArrayList<Product> newProducts = (ArrayList<Product>) input.readObject();
-                alert = new Alert(Alert.AlertType.INFORMATION,
-                        "Updated products from server:" + newProducts.toString());
-                alert.show();
-                for (Product p: newProducts)
-                    System.out.println(p);
+                listProductToRemove.setItems(FXCollections.observableArrayList(newProducts));
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-
-
-            listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
-//            try {
-//                output.writeObject("product management");
-//                output.flush();
-//                output.writeObject("list products");
-//                output.flush();
-//
-//                ArrayList<Product> c = (ArrayList<Product>) input.readObject();
-//
-//                localProducts = null;
-//                localProducts = c;
-//            } catch (IOException | ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//
-//            listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
-//            listFinalizedOrders.getSelectionModel().select(0); //needs to be selected in order to
         }
     }
 }

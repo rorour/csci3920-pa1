@@ -7,6 +7,11 @@
 
 package edu.ucdenver.company;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,7 +23,7 @@ public abstract class Product implements Serializable {
     private String description;
     private LocalDate incorporatedDate;
     private ArrayList<Category> categories;
-    //todo figure out how to add: private Image image;
+    private ImageIcon photo;
 
     public Product(String name, String id, String brand, String description,
                    LocalDate incorporatedDate){
@@ -28,6 +33,29 @@ public abstract class Product implements Serializable {
         this.description = description;
         this.incorporatedDate = incorporatedDate;
         this.categories = new ArrayList<>();
+    }
+
+    public void setPhoto(String filePath){
+        BufferedImage bIPhoto = null;
+        try {
+            //get image
+            bIPhoto = ImageIO.read(new File(filePath));
+            //convert bufferedImage to ImageIcon & store with object
+            this.photo = new ImageIcon(bIPhoto);
+        } catch (IOException e) { //if image not found, try to use default image
+            try {
+                bIPhoto = ImageIO.read(new File("src/edu/ucdenver/initialization/noImg.jpg"));
+                this.photo = new ImageIcon(bIPhoto);
+            } catch (IOException ioException) {
+                //if default image was not found
+                System.out.println(e.getMessage());
+            }
+
+        }
+    }
+
+    public ImageIcon getPhoto(){
+        return this.photo;
     }
 
     public String getName(){
@@ -62,7 +90,6 @@ public abstract class Product implements Serializable {
     }
     public void addCategory(Category c){
         this.categories.add(c);
-
     }
 
 
