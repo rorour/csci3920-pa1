@@ -1,9 +1,6 @@
 package edu.ucdenver.catalog;
 
-import edu.ucdenver.company.Category;
-import edu.ucdenver.company.Customer;
-import edu.ucdenver.company.Order;
-import edu.ucdenver.company.Product;
+import edu.ucdenver.company.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -65,14 +62,14 @@ public class Controller {
     private Customer currentCustomer;
     private Alert alert;
 
-    public Controller(){
+    public Controller() {
         listProducts = new ListView<>();
         listCategories = new ListView<>();
         listFinalizedOrderList = new ListView<>();
         listOrders = new ListView<>();
     }
 
-    public void initialize(){
+    public void initialize() {
         //set default visibility
         paneConnectServer.setVisible(true);
         paneConnectServer.setDisable(false);
@@ -85,8 +82,10 @@ public class Controller {
         this.listProducts.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Product>() {
             @Override
             public void changed(ObservableValue observable, Product oldValue, Product newValue) {
-                if(newValue != null){
-                    selectedProduct = newValue;
+                if (newValue != null) {
+                    selectedProduct = newValue; //for ordering
+
+                    textareaDescription.setText(productDesc(newValue));
 
                     //change image based on selected product's image and description
                     //imageProduct.setImage(new Image("image location")); //
@@ -96,13 +95,15 @@ public class Controller {
                 }
             }
         });
-        this.listCategories.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Product>() {
+        this.listCategories.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Category>() {
             @Override
-            public void changed(ObservableValue observable, Product oldValue, Product newValue) {
-                if(newValue != null){
-                    //listProducts.setItems(FXCollections);
-                    //shows products of specified category
-                    //listProducts.setItems(FXCollections.observableArrayList(newValue));
+            public void changed(ObservableValue observable, Category oldValue, Category newValue) {
+                if (newValue != null) {
+                    if (browseCategories(newValue) != null) {
+                        listProducts.setItems(FXCollections.observableArrayList(browseCategories(newValue)));
+                    } else {
+                        listProducts.setItems(FXCollections.emptyObservableList());
+                    }
                 }
             }
         });
@@ -124,11 +125,11 @@ public class Controller {
             alert.show();
         }
 
-        if (serverConnection.isConnected()){
+        if (serverConnection.isConnected()) {
             alert = null;
             String servermessage = null;
             try {
-                servermessage = (String)input.readObject();
+                servermessage = (String) input.readObject();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -145,29 +146,29 @@ public class Controller {
     }
 
     public void loginUser(ActionEvent actionEvent) {
-            String email = "charlie@customer.com"; //textFieldEmail.getText();
-            String password = "456pw"; //passfieldPassword.getText();
-            Alert alert = null;
-            String servermessage;
-            boolean loggedIn = false;
+        String email = "charlie@customer.com"; //textFieldEmail.getText();
+        String password = "456pw"; //passfieldPassword.getText();
+        Alert alert = null;
+        String servermessage;
+        boolean loggedIn = false;
 
-            try {
-                output.writeObject(email);
-                output.flush();
-                output.writeObject(password);
-                output.flush();
-                servermessage = (String)input.readObject();
-                alert = new Alert(Alert.AlertType.CONFIRMATION, servermessage);
-                alert.show();
-                if (servermessage.charAt(0) == '0'){
-                    loggedIn = true;
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-                alert.show();
+        try {
+            output.writeObject(email);
+            output.flush();
+            output.writeObject(password);
+            output.flush();
+            servermessage = (String) input.readObject();
+            alert = new Alert(Alert.AlertType.CONFIRMATION, servermessage);
+            alert.show();
+            if (servermessage.charAt(0) == '0') {
+                loggedIn = true;
             }
+        } catch (IOException | ClassNotFoundException e) {
+            alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.show();
+        }
 
-        if (loggedIn){
+        if (loggedIn) {
             paneLogin.setVisible(false);
             paneLogin.setDisable(true);
             paneCatalog.setVisible(true);
@@ -175,6 +176,7 @@ public class Controller {
 
         }
     }
+
     private boolean checkOrderStatus() throws IOException {
         output.writeObject("order management");
         output.flush();
@@ -188,7 +190,7 @@ public class Controller {
         Product p = selectedProduct;
         try {
             //creates an open order in case there isn't already one
-            if(!checkOrderStatus()){
+            if (!checkOrderStatus()) {
                 output.writeObject("order management");
                 output.flush();
 
@@ -203,51 +205,97 @@ public class Controller {
 
             output.writeObject(p);
             output.flush();
-
-            //todo: updatelist with changes
+            //note: getting errors, (same as before, just need to remember how to fix them lol
+            ArrayList<Order> orders = (ArrayList<Order>) input.readObject();
+            listOrders.setItems(FXCollections.observableArrayList(orders));
 
             alert = new Alert(Alert.AlertType.CONFIRMATION, p.getName() + " was added Successfully");
             alert.show();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.show();
             e.printStackTrace();
-
         }
 
-        //If no existing open order, creates new one.
-        //adds product to open order.
-        
     }
 
-    public void searchProduct(ActionEvent actionEvent) {
-        String search = this.textfieldSearch.getText();
+public void searchProduct(ActionEvent actionEvent){
+        String search=this.textfieldSearch.getText();
         //returns results into
         //this.listProducts.setItems(FXCollections.observableArrayList("list here"));
         //if no results back, then
         //this.listProducts.setItems(FXCollections.observableArrayList("No Search Found"));
-    }
+        }
 
-    public void removeFromOrder(ActionEvent actionEvent) {
+public void removeFromOrder(ActionEvent actionEvent){
         //get selected product from listOrders
         //listOrders.getSelectionModel().getSelectedItem();
         //removes all products that match
-    }
+        }
 
-    public void finalizeOrder(ActionEvent actionEvent) {
+public void finalizeOrder(ActionEvent actionEvent){
         //takes current open order and finalizes it
-        
-    }
 
-    public void exitApplication(ActionEvent actionEvent) {
-        Stage stage = (Stage) this.btnExit.getScene().getWindow();
+        }
+
+public void exitApplication(ActionEvent actionEvent){
+        Stage stage=(Stage)this.btnExit.getScene().getWindow();
         //TODO: Close client safely in exitApplication
         stage.close();
-    }
+        }
 
-    public void updateCatalog(Event event) {
-    }
+private ArrayList<Product> browseCategories(Category c){
+        ArrayList<Product> p=null;
+        try{
+        output.writeObject("browse");
+        output.flush();
+        output.writeObject(c);
+        output.flush();
+        p=(ArrayList<Product>)input.readObject();
+        return p;
+        }
+        catch(IOException|ClassNotFoundException e){
+        e.printStackTrace();
+        }
+        return p;
+        }
 
-    public void updateSearchTab(Event event) {
-    }
-}
+//I need to finish this.
+private String productDesc(Product p){
+        StringBuilder str=new StringBuilder();
+        //reason book is separate is because list order
+        if(p.productType().equals("Book")){
+        Book b=(Book)p;
+        str.append(p.getName());
+        str.append(b.getAuthorName());
+        str.append(b.getPublicationDate());
+        str.append(b.getNumOfPages());
+        }else{
+
+        str.append(p.getBrand());
+        str.append(p.getDescription());
+        if(p.productType().equals("Home")){
+
+        }
+        else if(p.productType().equals("Electronic")){
+
+        }
+        else if(p.productType().equals("Computer")){
+
+        }
+        else if(p.productType().equals("CellPhone")){
+
+        }
+        }
+
+        return str.toString();
+        }
+
+public void updateCatalog(Event event){
+        }
+
+public void updateSearchTab(Event event){
+        }
+
+
+        }

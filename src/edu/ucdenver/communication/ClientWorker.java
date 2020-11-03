@@ -185,7 +185,8 @@ public class ClientWorker implements Runnable {
     private void adminOrderReport() throws IOException {
         output.writeObject(company.getOrders());
         output.flush();
-        output.reset();
+        //output.reset();
+        //TODO: This was the problem. Apparently it doesn't like the reset? Dunno why.
     }
 
     private void adminOrderReportByDate() throws IOException, ClassNotFoundException {

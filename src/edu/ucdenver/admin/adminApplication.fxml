@@ -441,27 +441,12 @@
                                        <children>
                                           <Label text="Details:" />
                                           <Button fx:id="btnRemoveProduct" mnemonicParsing="false" onAction="#removeProduct" text="Remove Product" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
-                                          <GridPane GridPane.rowIndex="2">
-                                            <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                            </rowConstraints>
-                                             <children>
-                                                <Label fx:id="labelDetail1" text="" />
-                                                <Label fx:id="labelDetail2" text="" GridPane.rowIndex="1" />
-                                                <Label fx:id="labelDetail3" text="" GridPane.rowIndex="2" />
-                                                <Label fx:id="labelDetail4" text="" GridPane.rowIndex="3" />
-                                                <Label fx:id="labelDetail5" text="" GridPane.rowIndex="4" />
-                                             </children>
-                                          </GridPane>
                                           <ImageView fx:id="imageProduct" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                          <TextArea fx:id="textAreaProductDetails" prefHeight="200.0" prefWidth="200.0" promptText="Description" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </TextArea>
                                        </children>
                                     </GridPane>
                                     <ListView fx:id="listProductToRemove" prefHeight="200.0" prefWidth="200.0" />
@@ -485,7 +470,7 @@
                                     <RowConstraints maxHeight="347.8000549316406" minHeight="10.0" prefHeight="318.200048828125" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <ListView fx:id="listProducts1" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                    <ListView fx:id="listProductForAddCategory" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                        <GridPane.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </GridPane.margin>
@@ -530,7 +515,7 @@
                                     <RowConstraints maxHeight="347.8000549316406" minHeight="10.0" prefHeight="318.200048828125" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <ListView fx:id="listProducts2" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                    <ListView fx:id="listProductForRemoveCategory" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                        <GridPane.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </GridPane.margin>

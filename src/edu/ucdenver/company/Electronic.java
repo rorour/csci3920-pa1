@@ -26,6 +26,11 @@ public class Electronic extends Product{
         this.serialNum = serialNum;
     }
 
+    public int getWarrantyPeriod(){return this.warrantyPeriod;}
+    public void setWarrantyPeriod(int warrantyPeriod){
+        this.warrantyPeriod = warrantyPeriod;
+    }
+
     //@Override
     public String productType() {
         return "Electronic";
