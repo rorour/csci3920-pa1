@@ -181,44 +181,26 @@ public class Controller {
 
     public void initialize() {
         //set default visibility
-
         Book b;
         Electronic e;
         Computer c;
         CellPhone cp;
         Home h;
-        this.listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
+        //this.listProductToRemove.setItems(FXCollections.observableArrayList(localProducts));
         if(loggedIn){
-//            this.lstStudent.setItems(FXCollections.observableArrayList(university.getStudents()));
-//            this.lstCourse.setItems(FXCollections.observableArrayList(university.getCourses()));
-            try {
-//                output.writeObject("product management");
-//                output.flush();
-//                output.writeObject("list products");
-//                output.flush();
-//                ArrayList<Product> p = (ArrayList<Product>) input.readObject();
-//                localCategory = null;
-//                localProducts = p;
-//                //update all the lists
-//                listProducts1.setItems(FXCollections.observableArrayList(p));
-//                listProducts2.setItems(FXCollections.observableArrayList(p));
-//                listProductToRemove.setItems(FXCollections.observableArrayList(p));
-
-                //todo commented out to test updating
-                //updateAllProductLists();
-                //updateAllCategoryLists();
-                updateOrderLists();
+            //todo commented out to test updating -
+            // don't think we need these because we can update when tab selected instead.
+            //updateAllProductLists();
+            //updateAllCategoryLists();
+            //updateOrderLists();
 
 
-                openServerPane();
-                //closeLoginPane();
-                closeAdminPane();
+            openServerPane();
+            //closeLoginPane();
+            closeAdminPane();
 
-                closeServerPane();
-                openAdminPane();
-            } catch (IOException | ClassNotFoundException ioException) {
-                ioException.printStackTrace();
-            }
+            closeServerPane();
+            openAdminPane();
         } else {
             openServerPane();
             closeLoginPane();
@@ -333,7 +315,6 @@ public class Controller {
     //Server Login
     //========================================================*/
     public void connectToServer(ActionEvent actionEvent) {
-//connects to server
         //TODO get rid of debugging
         String ip = "127.0.0.1"; //textfieldServer.getText();
         int port = 10001; //Integer.parseInt(textfieldPort.getText());
@@ -1005,7 +986,14 @@ public class Controller {
 
     public void updateOrders(Event event) {
         if(this.tabOrderReport.isSelected()){
-            this.listFinalizedOrders.setItems(FXCollections.observableArrayList(localOrders));
+            try {
+                output.writeObject("order report");
+                output.flush();
+                ArrayList<Order> orders = (ArrayList<Order>)input.readObject();
+                this.listFinalizedOrders.setItems(FXCollections.observableArrayList(orders));
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
