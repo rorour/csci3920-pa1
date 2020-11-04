@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
 <GridPane alignment="center" hgap="10" minWidth="840.0" prefHeight="600.0" prefWidth="840.0" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.ucdenver.catalog.Controller">
    <children>
@@ -82,6 +83,20 @@
          <children>
             <TabPane prefHeight="570.0" prefWidth="840.0" tabClosingPolicy="UNAVAILABLE">
                <tabs>
+                  <Tab fx:id="tabHome" onSelectionChanged="#updateHomeTab" text="Home">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Label fx:id="labelWelcome" alignment="CENTER" layoutY="137.0" prefHeight="67.0" prefWidth="840.0" text="Welcome!">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="1.0" layoutY="245.0" prefHeight="17.0" prefWidth="840.0" text="To disconnect from the server, just close this window using the 'X' in the corner." textAlignment="CENTER" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
                   <Tab fx:id="tabBrowse" onSelectionChanged="#updateCatalogTab" text="Browse catalog">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="840.0">
@@ -129,7 +144,7 @@
                                                 <Insets right="5.0" top="5.0" />
                                              </GridPane.margin>
                                           </TextArea>
-                                          <ImageView fx:id="imageProduct" fitHeight="280.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fx:id="imageBrowseProduct" fitHeight="280.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -194,7 +209,7 @@
                                                 <Insets right="5.0" top="5.0" />
                                              </GridPane.margin>
                                           </TextArea>
-                                          <ImageView fx:id="imageProduct1" fitHeight="280.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
+                                          <ImageView fx:id="imageSearchProduct" fitHeight="280.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>

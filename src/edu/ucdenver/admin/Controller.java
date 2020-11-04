@@ -13,13 +13,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -43,15 +39,11 @@ public class Controller {
     public ComboBox secUserType;
     public Button btnAddUser;
     public Button btnAddBook;
-    public Button btnExit;
-    public TextField textfieldDefaultCategory;
     public Button btnSetDefault;
-    public TextField textDefaultCategory;
     public ListView listCategories;
     public TextField textfieldNewCategory;
     public Button btnAddCategory;
     public Button btnRemoveCategory;
-    public TextField textfieldRemoveCategory;
     public ListView listFinalizedOrders;
     public DatePicker dateStart;
     public DatePicker dateEnd;
@@ -87,23 +79,19 @@ public class Controller {
     public TextField textAddUserName;
     public TextField textAddUserEmail;
     public TextField textAddUserPassword;
-    public TextField textSetCategory;
     public ListView listProductForAddCategory;
     public ComboBox secProductCategoryAdd;
     public Button btnAddProductCategory;
-    public TextArea textAProductCategories;
     public ListView listProductForRemoveCategory;
     public ComboBox secProductCategoryRemove;
     public Button btnRemoveProductCategory;
-    public TextArea textAProductCategories2;
-    public Button btnSave;
     public Button btnTerminate;
     public Button btnRemoveProduct;
     public ListView listProductToRemove;
 
-    public Socket serverConnection;// = null;
-    public ObjectOutputStream output;// = null;
-    public ObjectInputStream input;// = null;
+    public Socket serverConnection;
+    public ObjectOutputStream output;
+    public ObjectInputStream input;
     public TextField textCategoryId;
     public TextField textCategoryDesc;
     public Tab tabAddRemove;
@@ -113,10 +101,8 @@ public class Controller {
     public Tab tabOrderReport;
     public ComboBox secNewDefault;
     public ComboBox secCategoryAddProduct;
-    public TextArea txtAreaDefaultCategory;
     public ComboBox secRemoveCategory;
     public TextArea textAreaOrderDetails;
-    public Tab tabProduct;
     public ImageView imageProduct;
     public TextArea textAreaProductDetails;
     public ImageView imgProductPhoto;
@@ -126,7 +112,6 @@ public class Controller {
     private String productBrand;
     private LocalDate productIncorpDate;
     private String productDesc;
-    private String productCategory;
     private String clientMessage;
     private String serverMessage;
     private Alert alert;
@@ -139,7 +124,6 @@ public class Controller {
 
 
     private Product selectedProduct;
-    //TODO: Fix GUI in Scene Builder
 
     public Controller() {
         this.output = null;
@@ -171,22 +155,9 @@ public class Controller {
 
     }
 
-    public void shutdown(){
-        System.out.println("Shutting down Admin App.");
-        if (this.serverConnection != null){
-            try {
-                output.writeObject("close client");
-                input.close();
-                output.close();
-                serverConnection.close();
-                System.out.println("Connection to server closed.");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
+    /**
+     * initializes GUI
+     */
     public void initialize() {
         //set default visibility for panes
         if(!loggedIn){
@@ -194,9 +165,6 @@ public class Controller {
             closeLoginPane();
             closeAdminPane();
         }
-
-
-
 
         //initialize currentdefault
         secUserType.setItems(FXCollections.observableArrayList("Customer", "Admin"));
@@ -215,7 +183,6 @@ public class Controller {
         });
 
         //Sets Product details
-        //TODO: haven't tested this yet
         listProductToRemove.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Product>() {
             @Override
             public void changed(ObservableValue observable, Product oldValue, Product newValue) {
@@ -234,8 +201,6 @@ public class Controller {
                     SwingFXUtils.toFXImage(bi, wi);
                     imgProductPhoto.setImage(wi);
                     //end displaying image
-                } else{
-                    //todo: clear image here just in case nothing is selected
                 }
             }
         });
@@ -252,7 +217,9 @@ public class Controller {
             public void changed(ObservableValue observable, Product oldValue, Product newValue) {
                 selectedProduct = newValue;
                 //Changes combobox based on the selected items categories
-                secProductCategoryRemove.setItems(FXCollections.observableArrayList(newValue.getCategories()));
+                if (selectedProduct != null){
+                    secProductCategoryRemove.setItems(FXCollections.observableArrayList(newValue.getCategories()));
+                }
             }
         });
 
@@ -275,11 +242,12 @@ public class Controller {
     //=======================================================
     //Server Login
     //========================================================*/
+    /**
+     * connect to server
+     */
     public void connectToServer(ActionEvent actionEvent) {
-//connects to server
-        //TODO get rid of debugging
-        String ip = "127.0.0.1"; //textfieldServer.getText();
-        int port = 10001; //Integer.parseInt(textfieldPort.getText());
+        String ip = textfieldServer.getText();
+        int port = Integer.parseInt(textfieldPort.getText());
         alert = null;
 
         try {
@@ -314,9 +282,12 @@ public class Controller {
     //=======================================================
     // Admin Login
     //========================================================*/
+    /**
+     * attempts login using email and password
+     */
     public void loginUser(ActionEvent actionEvent) {
         String email = "alice@admin.com"; //textfieldEmail.getText();
-        String password = "pw123"; //passfieldPassword.getText();
+        String password = "pw1234567"; //passfieldPassword.getText();
         alert = null;
         serverMessage = null;
         boolean loggedIn = false;
@@ -344,15 +315,10 @@ public class Controller {
             closeServerPane();
             openAdminPane();
 
-
-
             //updates lists and comboboxes with initial values
             try {
                 updateAllProductLists();
                 updateAllCategoryLists();
-
-                //updateOrderLists();
-
             } catch (IOException | ClassNotFoundException e) {
 
             }
@@ -362,51 +328,95 @@ public class Controller {
     //=======================================================
     //          User Management
     //========================================================
-
+    /**
+     * adds user to company
+     */
     public void addUser(ActionEvent actionEvent) {
         String username = null;
         String email = null;
         String password = null;
+        boolean test = true;
         try {
             username = textAddUserName.getText();
             email = textAddUserEmail.getText();
             password = textAddUserPassword.getText();
-        } catch (IllegalArgumentException|NullPointerException iae){
-            alert = new Alert(Alert.AlertType.ERROR, "Fields may not have been filled out correctly");
-            alert.show();
+        } catch (NullPointerException | IllegalArgumentException e) {
+            alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+            return;
         }
-
-        clientMessage = "create new user";
 
         try {
-            if (secUserType.getValue().equals("Customer")) {
-                output.writeObject(clientMessage);
-                output.flush();
-                output.writeObject(new Customer(username, email, password));
-                output.flush();
-                serverMessage = (String)input.readObject();
-                alert = new Alert(Alert.AlertType.CONFIRMATION, serverMessage);
-                alert.showAndWait();
-                cleanUsertext();
-            } else if (secUserType.getValue().equals("Admin")) {
-                output.writeObject(clientMessage);
-                output.flush();
-                output.writeObject(new Administrator(username, email, password));
-                output.flush();
-                serverMessage = (String)input.readObject();
-                alert = new Alert(Alert.AlertType.CONFIRMATION, serverMessage);
-                alert.showAndWait();
-                cleanUsertext();
-            } else {
-                alert = new Alert(Alert.AlertType.ERROR, "User type not selected");
+            if (email.length() < 5) {
+                test = false;
+                throw new IllegalArgumentException("Invalid email address - too short");
             }
-        } catch (IllegalArgumentException | NullPointerException | IOException | ClassNotFoundException e) {
+            String[] emailSplit = email.split("@");
+            if (emailSplit.length != 2) {
+                test = false;
+                throw new IllegalArgumentException("Invalid email address - cannot find @ symbol");
+            }
+            String after_at_symbol = emailSplit[1];
+            if (after_at_symbol.length() < 3) {
+                test = false;
+                throw new IllegalArgumentException("Invalid email address - domain too short");
+            }
+            String[] after_at_split = after_at_symbol.split("\\.");
+            if (after_at_split.length != 2) {
+                test = false;
+                throw new IllegalArgumentException("Invalid email address - domain should be 2 words separated by dots");
+            }
+            if (password.length() < 8) {
+                test = false;
+                throw new IllegalArgumentException("Password must be at least 8 characters.");
+            }
+        } catch (IllegalArgumentException e){
             alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-            alert.show();
+            alert.showAndWait();
+            return;
         }
+
+
+        if (test){
+            clientMessage = "create new user";
+            User newUser = null;
+            try {
+                if (secUserType.getValue().equals("Customer")) {
+                    output.writeObject(clientMessage);
+                    output.flush();
+                    newUser = new Customer(username, email, password);
+                    output.writeObject(newUser);
+                    output.flush();
+                    serverMessage = (String)input.readObject();
+                    alert = new Alert(Alert.AlertType.CONFIRMATION, serverMessage);
+                    alert.showAndWait();
+                    cleanUsertext();
+                } else if (secUserType.getValue().equals("Admin")) {
+                    output.writeObject(clientMessage);
+                    output.flush();
+                    newUser = new Administrator(username, email, password);
+                    output.writeObject(newUser);
+                    output.flush();
+                    serverMessage = (String)input.readObject();
+                    alert = new Alert(Alert.AlertType.CONFIRMATION, serverMessage);
+                    alert.showAndWait();
+                    cleanUsertext();
+                } else {
+                    alert = new Alert(Alert.AlertType.ERROR, "User type not selected");
+                }
+            } catch (IllegalArgumentException | NullPointerException | IOException | ClassNotFoundException e) {
+                alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+                alert.show();
+            }
+        }
+
+
 
     }
 
+    /**
+     * clear text fields
+     */
     private void cleanUsertext() {
         textAddUserName.clear();
         textAddUserEmail.clear();
@@ -417,6 +427,9 @@ public class Controller {
      // Order Report
      //========================================================
 
+    /**
+     * gets order report for specified date range
+     */
     public void returnOrderReport(ActionEvent actionEvent) {
         LocalDate startDate = dateStart.getValue();
         LocalDate endDate = dateEnd.getValue();
@@ -443,15 +456,26 @@ public class Controller {
                 e.printStackTrace();
             }
         }
+    }
 
-
+    /**
+     * returns string for displaying orders
+     */
+    private String orderConvertToString(Order order){
+        StringBuilder sb = new StringBuilder();
+        for(Product p : order.getProducts()){
+            sb.append(String.format("%s %s %s%n", p.getName(), p.getId(), p.getBrand()));
+        }
+        return sb.toString();
     }
 
 
     //=======================================================
     //      Category Management
     //========================================================*/
-
+    /**
+     * set default category for company
+     */
     public void setDefaultCategory(ActionEvent actionEvent) {
         Category c = (Category) secRemoveCategory.getValue();
 
@@ -477,7 +501,9 @@ public class Controller {
         }
 
     }
-    //TODO needs to make sure you can't add
+    /**
+     * add category to company
+     */
     public void addCategory(ActionEvent actionEvent) {
         String name = textfieldNewCategory.getText();
         String id = textCategoryId.getText();
@@ -502,8 +528,9 @@ public class Controller {
         }
 
     }
-
-    //TODO removeCategory
+    /**
+     * remove category from company; removes from all items
+     */
     public void removeCategory(ActionEvent actionEvent) {
         Category c = (Category) secRemoveCategory.getValue();
         if(!secRemoveCategory.getSelectionModel().isEmpty()){
@@ -536,7 +563,7 @@ public class Controller {
     // Product Management
     // ========================================================*/
     /**
-     * Sets Strings based on their respected textfields
+     * Sets Strings based on their respective textfields
      */
     private void setProductStrings() {
         try {
@@ -545,16 +572,12 @@ public class Controller {
             this.productBrand = this.textfieldProductBrand.getText();
             this.productIncorpDate = this.dateIncorporated.getValue(); //might need to convert to string
             this.productDesc = this.textAreaProductDesc.getText();
-            //todo add category from drop down - i'm commenting this out for now
-            //this.productCategory = this.textSetCategory.getText();
-            this.productCategory = null;
         } catch (IllegalArgumentException iae){
             alert = new Alert(Alert.AlertType.ERROR, "Fields may not have been filled out correctly\n"
                     + "Error thrown: " + iae.getMessage());
             alert.show();
         }
     }
-    //TODO: Revise Confirmation/Error messages for each
 
     /** Sends message to server to add Product into company
      * @param p Product
@@ -584,6 +607,9 @@ public class Controller {
     }
 
 
+    /**
+     * addProduct functions get product information from text fields and add products to catalog
+     */
     public void addBook(ActionEvent actionEvent) {
         //string names: productName, productId, productBrand, productIncorpDate, productDesc, productCategory
         this.setProductStrings();
@@ -691,6 +717,9 @@ public class Controller {
         }
     }
 
+    /**
+     * remove product from company
+     */
     public void removeProduct(ActionEvent actionEvent) {
         Product p = null;
         try {
@@ -726,17 +755,11 @@ public class Controller {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-//        try {
-//            updateAllProductLists();
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-
     }
 
+    /**
+     * adds a category to the selected product
+     */
     public void addCategoryToProduct(ActionEvent actionEvent) {
         Category c = (Category) secProductCategoryAdd.getValue();
         Product p = selectedProduct;
@@ -752,7 +775,6 @@ public class Controller {
             output.flush();
             output.writeObject(c);
             output.flush();
-            //serverMessage = (String)input.readObject();
             alert = new Alert(Alert.AlertType.CONFIRMATION, "Success" );
             alert.showAndWait();
             
@@ -763,13 +785,15 @@ public class Controller {
         }
     }
 
-
+    /**
+     * removes category from selected product
+     */
     public void removeCategoryFromProduct(ActionEvent actionEvent) {
         Category c = (Category) secProductCategoryRemove.getValue();
         Product p = selectedProduct;
 
         Alert alert;
-        if(!secProductCategoryRemove.getSelectionModel().isEmpty()){
+        if(selectedProduct != null && !secProductCategoryRemove.getSelectionModel().isEmpty()){
             try {
                 output.writeObject("product management");
                 output.flush();
@@ -781,9 +805,15 @@ public class Controller {
                 output.flush();
                 output.writeObject(c);
                 output.flush();
-                //serverMessage = (String)input.readObject();
                 alert = new Alert(Alert.AlertType.CONFIRMATION, "Success");
                 alert.show();
+                secProductCategoryRemove.getSelectionModel().clearSelection();
+                secProductCategoryRemove.getItems().clear();
+                try {
+                    updateAllProductLists();
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             } catch (IOException e) {
                 alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.show();
@@ -792,21 +822,19 @@ public class Controller {
             alert = new Alert(Alert.AlertType.ERROR, "Category not selected");
             alert.show();
         }
-
-
     }
-
 
     //=======================================================
     // Server Exit / Save / Terminate.
     //========================================================
-
+    /**
+     * tells server to terminate; closes connection to server
+     */
     public void terminateServer(ActionEvent actionEvent) {
         String clientMessage = "terminate";
         try {
             output.writeObject(new String(clientMessage));
             output.flush();
-            //serverMessage = (String)input.readObject();
             alert = new Alert(Alert.AlertType.CONFIRMATION, "Server Saved and Terminated");
             alert.showAndWait();
         } catch (IOException e) {
@@ -815,11 +843,31 @@ public class Controller {
 
     }
 
+    /**
+     * called when window closed; terminates connection and tells server to close client connection
+     */
+    public void shutdown(){
+        System.out.println("Shutting down Admin App.");
+        if (this.serverConnection != null){
+            try {
+                output.writeObject("close client");
+                input.close();
+                output.close();
+                serverConnection.close();
+                System.out.println("Connection to server closed.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     //=======================================================
     // GUI Methods
     //========================================================
-    //TODO
+    /**
+     * changes available fields for selected product type
+     */
     private String toggleDescription(Product p) {
         StringBuilder str = new StringBuilder();
         //reason book is separate is because list order
@@ -846,7 +894,7 @@ public class Controller {
         else if(p.productType().equals("Electronic")){
             Electronic e = (Electronic) p;
             str.append("Serial no.: " + e.getSerialNum() + "\n" +
-                    "Warranty Period: " + e.getWarrantyPeriod() + " years\n"); //TODO if we change warranty to be a string, we can get rid of this in the string
+                    "Warranty Period: " + e.getWarrantyPeriod() + " years\n");
 
         }
         else if(p.productType().equals("Computer")){
@@ -868,6 +916,10 @@ public class Controller {
         }
         return str.toString();
     }
+
+    /**
+     * changes view for selected product type
+     */
     private void toggleProductOptions(String newValue) {
         if (newValue == "Book") {
             openBookPane();
@@ -908,7 +960,9 @@ public class Controller {
             closePhonePane();
         }
     }
-
+    /**
+     * below functions update/close/open panes.
+     */
     private void openServerPane() {
         paneConnectServer.setVisible(true);
         paneConnectServer.setDisable(false);
@@ -978,10 +1032,7 @@ public class Controller {
 
     public void updateCategoryList(Event event) {
         if(this.tabAddRemove.isSelected()){
-//            secProductCategoryAdd.setItems(FXCollections.observableArrayList(localCategory));
-//            secNewDefault.setItems(FXCollections.observableArrayList(localCategory));
-//            secRemoveCategory.setItems(FXCollections.observableArrayList(localCategory));
-//            listCategories.setItems(FXCollections.observableArrayList(localCategory));
+            //
         }
 
     }
@@ -998,7 +1049,6 @@ public class Controller {
                 localCategory = null;
                 localProducts = p;
 
-                //listProductForAddCategory.setItems(FXCollections.observableArrayList(p));
                 updateAllProductLists();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -1049,11 +1099,7 @@ public class Controller {
     }
 
 
-    // : cleanup. Lets update each list individually, so we can get rid of this
     public void updateAllProductLists() throws IOException, ClassNotFoundException {
-        //Initializing lists with objects
-
-        //testing grabbing arraylists
         output.writeObject("product management");
         output.flush();
         output.writeObject("list products");
@@ -1069,7 +1115,6 @@ public class Controller {
 
     }
 
-    //TODO Cleanup.
     public void updateAllCategoryLists() throws IOException, ClassNotFoundException {
         output.writeObject("category management");
         output.flush();
@@ -1098,11 +1143,4 @@ public class Controller {
         }
     }
 
-    private String orderConvertToString(Order order){
-        StringBuilder sb = new StringBuilder();
-        for(Product p : order.getProducts()){
-            sb.append(String.format("%s %s %s%n", p.getName(), p.getId(), p.getBrand()));
-        }
-        return sb.toString();
-    }
 }

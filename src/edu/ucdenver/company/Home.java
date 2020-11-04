@@ -13,14 +13,18 @@ public class Home extends Product{
 
     public Home(String name, String id, String brand, String description, LocalDate incorporatedDate, String location) {
         super(name, id, brand, description, incorporatedDate);
-        this.location = location;
+        setLocation(location);
     }
 
     public String getLocation(){
         return this.location;
     }
     public void setLocation(String location){
-        this.location = location;
+        location = location.toLowerCase();
+        StringBuilder sb = new StringBuilder();
+        sb.append(location.substring(0,1).toUpperCase());
+        sb.append(location.substring(1));
+        this.location = sb.toString();
     }
 
     @Override

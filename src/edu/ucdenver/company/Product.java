@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-//TODO: Fix the abstract: As of now, cannot access methods in derived classes
+
 public abstract class Product implements Serializable {
     private String name;
     private String id;
@@ -108,7 +108,6 @@ public abstract class Product implements Serializable {
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Product: ");
         sb.append(this.name + " ");
         sb.append(this.id + " ");
         sb.append(this.brand + " ");

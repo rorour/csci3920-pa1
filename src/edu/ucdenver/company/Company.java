@@ -19,7 +19,7 @@ public class Company implements Serializable {
     private ArrayList<Category> categories;
     private ArrayList<Order> orders;
     private Category defaultCategory;
-    private static int orderNumbers; //increments each time an order is made by various customers
+    private int orderNumbers; //increments each time an order is made by various customers
 
     private String name;
 
@@ -148,9 +148,6 @@ public class Company implements Serializable {
      */
     synchronized public void addCategory(Category category){this.categories.add(category);}
 
-    //TODO: we can delete this since we're not using it + no implementation
-    //public Category findCategory(String c){return null;} //for checking to see if it already exists in list
-
     /** Removes a category and sets any product under that category to the default category
      * @param categoryToRemove Category
      */
@@ -189,6 +186,7 @@ public class Company implements Serializable {
      * @return ArrayList of all matching products
      */
     synchronized public ArrayList<Product> searchProducts(String str){
+        str = str.toLowerCase();
         ArrayList<Product> matchingProducts = new ArrayList<>();
         String lowerCaseName;
         String lowerCaseDesc;
@@ -222,9 +220,6 @@ public class Company implements Serializable {
     //============================================================================
     //              Product Details
     //============================================================================
-    //TODO: OK, so, definitely use this. will revisit later if time
-    synchronized public String showProductDetails(Product p){return "";} //shows all product information: use of toString will make this easy
-
 
     //============================================================================
     //              Order Management
@@ -275,7 +270,6 @@ public class Company implements Serializable {
      * @param customer Customer
      * @return Arraylist of all products the order
      */
-    //TODO: Thinking about returning a map and have duplicate orders be counted. eg "ThisBook" x2
     synchronized public ArrayList<Product> listOrderProducts(Customer customer){
         ArrayList<Product> tempProducts = new ArrayList<>();
         ArrayList<Product> newProductList = new ArrayList<>();
@@ -326,8 +320,8 @@ public class Company implements Serializable {
     /** Increments the order number each time an order is being made
      * @return int
      */
-    synchronized private static int createNewOrderNum(){
-        return orderNumbers++;
+    synchronized private int createNewOrderNum(){
+        return ++orderNumbers;
     }
 
 

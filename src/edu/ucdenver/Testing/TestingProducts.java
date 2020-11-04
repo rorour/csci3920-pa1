@@ -1,5 +1,6 @@
-package edu.ucdenver.company;
+package edu.ucdenver.Testing;
 
+import edu.ucdenver.company.*;
 import javafx.scene.control.Cell;
 
 import java.io.*;
@@ -157,6 +158,12 @@ public class TestingProducts {
             System.out.println(myCompany.browseCategory(c));
         }
 
+        Administrator a1 = new Administrator("Raven", "raven@gmail.com", "1111111111");
+        //Administrator a2 = new Administrator("BadPassword", "email@email.com", "00");
+        //Administrator a3 = new Administrator("BadEmail", "a@a", "1234556674564");
+        myCompany.addUser(a1);
+        //myCompany.addUser(a2);
+        //myCompany.addUser(a3);
 
         //testing reading/writing objects to/from file
 

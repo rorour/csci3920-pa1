@@ -1,4 +1,4 @@
-package edu.ucdenver.communication;
+package edu.ucdenver.server;
 import edu.ucdenver.company.*;
 
 import java.io.*;

@@ -1,15 +1,12 @@
-package edu.ucdenver.communication;
+package edu.ucdenver.server;
 import edu.ucdenver.company.*;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDate;
-import java.util.concurrent.ExecutorService;
-import java.util.Collections;
 
 public class ClientWorker implements Runnable {
-    //same company object used by every clientworker
     private static Company company;
     private Socket clientConnection;
     private int id;
@@ -35,6 +32,10 @@ public class ClientWorker implements Runnable {
         return company;
     }
 
+    /**
+     * @param message takes string
+     * sends string to client
+     */
     private void sendMessage(String message){
         try {
             output.writeObject(new String(message + "\n"));
@@ -45,14 +46,11 @@ public class ClientWorker implements Runnable {
 
     }
 
-    private void processClientRequest() throws IOException{}
-
-    private void closeClientConnection(){}
-
-    private void displayMessage(String message){}
-
-    //returns whether to terminate server
-    private boolean adminCommands() throws IOException, ClassNotFoundException {
+    /**
+     * this is the main function for processing commands from an admin user.
+     * @returns true if server should terminate.
+     */
+    private boolean adminCommands() {
         String command = null;
         boolean keepRunningClient = true;
         boolean terminateServer = false;
@@ -100,6 +98,10 @@ public class ClientWorker implements Runnable {
         return terminateServer;
     }
 
+    /**
+     * this function handles commands from admin user related to product management.
+     * @throws IOException, ClassNotFoundException
+     */
     private void adminProductManagement() throws IOException, ClassNotFoundException {
         String command = null;
         command = (String)input.readObject();
@@ -138,11 +140,6 @@ public class ClientWorker implements Runnable {
                 output.writeObject(company.getCatalog());
                 output.flush();
                 output.reset();
-
-                System.out.println("List products called");
-
-                for (Product prod : company.getCatalog())
-                    System.out.println(prod);
                 break;
             default:
                 sendMessage("1|Unknown command " + command);
@@ -151,11 +148,19 @@ public class ClientWorker implements Runnable {
 
     }
 
+    /**
+     * creates new user from admin input and adds to company
+     * @throws IOException, ClassNotFoundException
+     */
     private void adminNewUser() throws IOException, ClassNotFoundException {
         User newUser = (User)input.readObject();
         company.addUser(newUser);
     }
 
+    /**
+     * this function handles commands from admin user related to category management.
+     * @throws IOException, ClassNotFoundException
+     */
     private void adminCategoryManagement() throws IOException, ClassNotFoundException {
         String command = null;
         command = (String)input.readObject();
@@ -183,13 +188,18 @@ public class ClientWorker implements Runnable {
 
     }
 
+    /**
+     * gets order report from company for admin
+     * @throws IOException
+     */
     private void adminOrderReport() throws IOException {
         output.writeObject(company.getOrders());
         output.flush();
-        //output.reset();
-        //TODO: This was the problem. Apparently it doesn't like the reset? Dunno why.
     }
 
+    /**
+     * gets order report for specified date range for admin
+     */
     private void adminOrderReportByDate() throws IOException, ClassNotFoundException {
         LocalDate date1 = (LocalDate)input.readObject();
         LocalDate date2 = (LocalDate)input.readObject();
@@ -198,6 +208,9 @@ public class ClientWorker implements Runnable {
         output.reset();
     }
 
+    /**
+     * this is the main function for procession commands from a customer user.
+     */
     private void customerCommands(){
         String command = null;
         boolean keepRunningClient = true;
@@ -206,6 +219,11 @@ public class ClientWorker implements Runnable {
             try {
                 command = (String)input.readObject();
                 switch (command){
+                    case "get name":
+                        output.writeObject(this.currentUser.getDisplayName());
+                        output.flush();
+                        output.reset();
+                        break;
                     case "browse":
                         customerBrowse();
                         break;
@@ -238,6 +256,10 @@ public class ClientWorker implements Runnable {
         }
     }
 
+    /**
+     * sends all products in selected category to client
+     * @throws IOException, ClassNotFoundException
+     */
     private void customerBrowse() throws IOException, ClassNotFoundException {
         Category c = (Category)input.readObject();
         output.writeObject(company.browseCategory(c));
@@ -245,6 +267,10 @@ public class ClientWorker implements Runnable {
 
     }
 
+    /**
+     * returns all products with specified search terms to client
+     * @throws IOException, ClassNotFoundException
+     */
     private void customerSearch() throws IOException, ClassNotFoundException {
         String str = (String) input.readObject();
         output.writeObject(company.searchProducts(str));
@@ -252,6 +278,10 @@ public class ClientWorker implements Runnable {
         output.reset();
     }
 
+    /**
+     * this function handles commands from customer related to their orders
+     * @throws IOException, ClassNotFoundException
+     */
     private void customerOrder() throws IOException, ClassNotFoundException {
         String command = null;
             command = (String) input.readObject();
@@ -278,7 +308,6 @@ public class ClientWorker implements Runnable {
                     catch(IllegalArgumentException iae){
                         sendMessage("1|" + iae);
                     }
-                    //todo: product not being removed from database even on server side, might be my method in Order class
                     break;
                 case "list order products":
                     output.writeObject(company.listOrderProducts((Customer) currentUser));
@@ -345,9 +374,6 @@ public class ClientWorker implements Runnable {
      */
     @Override
     public void run() {
-        //handle client interactions
-        //todo make sure all necessary company functions are synchronized
-        //close client connection
         try {
             //get streams
             input = new ObjectInputStream(clientConnection.getInputStream());

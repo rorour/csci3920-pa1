@@ -42,13 +42,19 @@ public class Category implements Serializable {
         this.description = description;
     }
 
-    //compares category names
+    /**
+     * @param c2 takes second category to compare to calling category.
+     * @returns comparison of category names for alphabetizing.
+     */
     public int compareTo(Category c2){
         CategoryComparator cc = new CategoryComparator();
         return cc.compare(this, c2);
     }
 
-    //only checks if category names are the same
+    /**
+     * @param c2 takes second category to compare to calling category.
+     * @returns true if categories have same name; false otherwise
+     */
     public boolean equals(Category c2){
         if (this.compareTo(c2) == 0){
             return true;
@@ -58,6 +64,6 @@ public class Category implements Serializable {
 
     @Override
     public String toString(){
-        return name + " " + id + "\n\t" + description;
+        return name;
     }
 }
