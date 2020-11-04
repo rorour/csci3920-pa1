@@ -284,7 +284,7 @@
                                           </TextArea>
                                        </children>
                                     </GridPane>
-                                    <Button fx:id="btnFinalize" mnemonicParsing="false" onAction="#finalizeOrder" text="Finalized Order" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                                    <Button fx:id="btnFinalize" mnemonicParsing="false" onAction="#finalizeOrder" text="Finalize Order" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                                     <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#cancelOrder" text="Cancel Order" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
