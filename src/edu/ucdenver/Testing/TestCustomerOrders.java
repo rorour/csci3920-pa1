@@ -109,7 +109,7 @@ public class TestCustomerOrders {
             company.finalizeOrder((Customer) currentUser);
             System.out.println(company.listOrderReport((Customer) currentUser));
 
-            company.testFinalizedOrders();
+            //company.testFinalizedOrders();
             //System.out.println(company.getOrders());
             ArrayList<Order> orders = company.listOrdersByDate(LocalDate.of(2020, 1, 1),LocalDate.of(2020,4, 1));
 

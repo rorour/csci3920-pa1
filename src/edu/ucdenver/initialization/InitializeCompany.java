@@ -89,7 +89,7 @@ public class InitializeCompany {
         company.addProductToOrder(tempCustomer, p3);
         company.finalizeOrder(tempCustomer);
 
-        company.testFinalizedOrders(); //for testing purposes only
+        //company.testFinalizedOrders(); //for testing purposes only
 
         //add photos
         for (Product p : company.getCatalog()){
