@@ -382,8 +382,18 @@ public class Company implements Serializable {
         Order temp = null;
         for(int i = 1; i < 13; i++){
             temp = new Order(createNewOrderNum());
+            if(i == 2 || i == 4 || i == 6){
+                temp.addProduct(p);
+            }
+            else if(i == 3 || i==5 || i ==7){
+                temp.addProduct(p2);
+            }
+            else{
+                temp.addProduct(p3);
+            }
+
             temp.finalizeOrder();
-            temp.setFinalizedDate(LocalDate.of(2020,i,1));
+            temp.setFinalizedDate(LocalDate.of(2019,i,1));
             this.orders.add(temp);
         }
 
