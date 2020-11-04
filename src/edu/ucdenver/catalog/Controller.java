@@ -329,15 +329,15 @@ public class Controller {
             serverMessage = (String) input.readObject();
 
             //update list (will tab do it automatically?
-            //listOrders.setItems(FXCollections.observableArrayList());
-//            output.writeObject("order management");
-//            output.flush();
-//
-//            output.writeObject("list order products");
-//            output.flush();
-//
-//            ArrayList<Order> orders = (ArrayList<Order>) input.readObject();
-//            listOrders.setItems(FXCollections.observableArrayList(orders));
+            listOrders.setItems(FXCollections.observableArrayList());
+            output.writeObject("order management");
+            output.flush();
+
+            output.writeObject("list order products");
+            output.flush();
+
+            ArrayList<Order> orders = (ArrayList<Order>) input.readObject();
+            listOrders.setItems(FXCollections.observableArrayList(orders));
             alert = new Alert(Alert.AlertType.CONFIRMATION, serverMessage);
             alert.showAndWait();
         } catch (IOException | ClassNotFoundException e) {

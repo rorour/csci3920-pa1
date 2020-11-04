@@ -33,7 +33,8 @@ public class Order implements Serializable {
     /** Removes all instances of product in order
      * @param product Product Type*/
     public void removeProduct(Product product){
-        products.removeAll(Collections.singletonList(product));
+        products.removeIf(p -> p.equals(product));
+        //products.removeAll(Collections.singletonList(product));
     } //todo this might be causing the problem. worked in console but not now.
 
     /** Changes status of the the order and retrieves current date */

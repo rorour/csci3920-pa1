@@ -234,6 +234,8 @@ public class Controller {
                     SwingFXUtils.toFXImage(bi, wi);
                     imgProductPhoto.setImage(wi);
                     //end displaying image
+                } else{
+                    //todo: clear image here just in case nothing is selected
                 }
             }
         });
@@ -251,6 +253,18 @@ public class Controller {
                 selectedProduct = newValue;
                 //Changes combobox based on the selected items categories
                 secProductCategoryRemove.setItems(FXCollections.observableArrayList(newValue.getCategories()));
+            }
+        });
+
+        listFinalizedOrders.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Order>() {
+            @Override
+            public void changed(ObservableValue observable, Order oldValue, Order newValue) {
+                if(newValue != null){
+                    textAreaOrderDetails.setText(orderConvertToString(newValue));
+                }
+                else {
+                    textAreaOrderDetails.setText("");
+                }
             }
         });
 
@@ -330,17 +344,18 @@ public class Controller {
             closeServerPane();
             openAdminPane();
 
-            //TODO: we can get rid of this now since we've decided to use tabs and buttons.
 
-//            //updates lists and comboboxes with initial values
-//            try {
-//                //updateAllProductLists();
-//                //CategoryLists();
-//                //updateOrderLists();
-//
-//            } catch (IOException | ClassNotFoundException e) {
-//
-//            }
+
+            //updates lists and comboboxes with initial values
+            try {
+                updateAllProductLists();
+                updateAllCategoryLists();
+
+                //updateOrderLists();
+
+            } catch (IOException | ClassNotFoundException e) {
+
+            }
         }
     }
 
@@ -462,7 +477,7 @@ public class Controller {
         }
 
     }
-
+    //TODO needs to make sure you can't add
     public void addCategory(ActionEvent actionEvent) {
         String name = textfieldNewCategory.getText();
         String id = textCategoryId.getText();
@@ -706,21 +721,22 @@ public class Controller {
             serverMessage = (String) input.readObject();
             alert = new Alert(Alert.AlertType.INFORMATION, serverMessage);
             alert.show();
+            updateAllProductLists();
+            textAreaProductDetails.setText("");//clears details
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        try {
-            updateAllProductLists();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            updateAllProductLists();
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
 //
 //
 
     }
 
-    //TODO: Test to see if add and remove Category from Product actually works.
     public void addCategoryToProduct(ActionEvent actionEvent) {
         Category c = (Category) secProductCategoryAdd.getValue();
         Product p = selectedProduct;
@@ -740,8 +756,8 @@ public class Controller {
             alert = new Alert(Alert.AlertType.CONFIRMATION, "Success" );
             alert.showAndWait();
             
-
-        } catch (IOException e) {
+            updateAllProductLists();
+        } catch (IOException | ClassNotFoundException e) {
             alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.show();
         }
@@ -785,13 +801,6 @@ public class Controller {
     // Server Exit / Save / Terminate.
     //========================================================
 
-    public void exitApplication(ActionEvent actionEvent) {
-        Stage stage = (Stage) this.btnExit.getScene().getWindow();
-        //TODO: Close client safely in exitApplication
-
-        stage.close();
-    }
-
     public void terminateServer(ActionEvent actionEvent) {
         String clientMessage = "terminate";
         try {
@@ -817,11 +826,12 @@ public class Controller {
         str.append("Name: " + p.getName() + "\n" +
                 "Id: " + p.getId() + "\n" +
                 "Brand: " + p.getBrand() + "\n" +
-                "Incorporation Date: " + p.getIncorporatedDate() + "/n" +
+                "Incorporation Date: " + p.getIncorporatedDate() + "\n" +
                 "Categories: ");
         for(Category c : p.getCategories()){
             str.append(c.getName() + " ");
         }
+        str.append("\n");
         if(p.productType().equals("Book")){
             Book b =  (Book)p;
             str.append("Author: " + b.getAuthorName() + "\n" +
@@ -837,19 +847,24 @@ public class Controller {
             Electronic e = (Electronic) p;
             str.append("Serial no.: " + e.getSerialNum() + "\n" +
                     "Warranty Period: " + e.getWarrantyPeriod() + " years\n"); //TODO if we change warranty to be a string, we can get rid of this in the string
-            if(p.productType().equals("Computer")){
-                Computer computer = (Computer) p;
-                str.append("Specs: ");
-                for(String s : computer.getSpecs()){
-                    str.append(s + "  ");
-                }
-                str.append("\n");
+
+        }
+        else if(p.productType().equals("Computer")){
+            Computer computer = (Computer) p;
+            str.append("Serial no.: " + computer.getSerialNum() + "\n" +
+                    "Warranty Period: " + computer.getWarrantyPeriod() + " years\n");
+            str.append("Specs: ");
+            for(String s : computer.getSpecs()){
+                str.append(s + "  ");
             }
-            else if(p.productType().equals("CellPhone")){
-                CellPhone phone = (CellPhone) p;
-                str.append("IMEI: " + phone.getImei() + "\n +" +
-                        "OS: " + phone.getOs());
-            }
+            str.append("\n");
+        }
+        else if(p.productType().equals("CellPhone")){
+            CellPhone phone = (CellPhone) p;
+            str.append("Serial no.: " + phone.getSerialNum() + "\n" +
+                    "Warranty Period: " + phone.getWarrantyPeriod() + " years\n");
+            str.append("IMEI: " + phone.getImei() + "\n +" +
+                    "OS: " + phone.getOs());
         }
         return str.toString();
     }
@@ -963,10 +978,10 @@ public class Controller {
 
     public void updateCategoryList(Event event) {
         if(this.tabAddRemove.isSelected()){
-            secProductCategoryAdd.setItems(FXCollections.observableArrayList(localCategory));
-            secNewDefault.setItems(FXCollections.observableArrayList(localCategory));
-            secRemoveCategory.setItems(FXCollections.observableArrayList(localCategory));
-            listCategories.setItems(FXCollections.observableArrayList(localCategory));
+//            secProductCategoryAdd.setItems(FXCollections.observableArrayList(localCategory));
+//            secNewDefault.setItems(FXCollections.observableArrayList(localCategory));
+//            secRemoveCategory.setItems(FXCollections.observableArrayList(localCategory));
+//            listCategories.setItems(FXCollections.observableArrayList(localCategory));
         }
 
     }
@@ -983,7 +998,8 @@ public class Controller {
                 localCategory = null;
                 localProducts = p;
 
-                listProductForAddCategory.setItems(FXCollections.observableArrayList(p));
+                //listProductForAddCategory.setItems(FXCollections.observableArrayList(p));
+                updateAllProductLists();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -993,6 +1009,7 @@ public class Controller {
     public void updateAddCtoP(Event event) {
         if(this.tabAddCtoP.isSelected()){
             try {
+                //adding products to list
                 output.writeObject("product management");
                 output.flush();
                 output.writeObject("list products");
@@ -1000,6 +1017,15 @@ public class Controller {
                 ArrayList<Product> p = (ArrayList<Product>) input.readObject();
                 localCategory = null;
                 localProducts = p;
+
+                //adding categories to combobox
+                output.writeObject("category management");
+                output.flush();
+                output.writeObject("list categories");
+                output.flush();
+                ArrayList<Category> c = (ArrayList<Category>) input.readObject();
+
+                secProductCategoryAdd.setItems(FXCollections.observableArrayList(c));
 
                 listProductForAddCategory.setItems(FXCollections.observableArrayList(p));
             } catch (IOException | ClassNotFoundException e) {
@@ -1021,20 +1047,9 @@ public class Controller {
             listFinalizedOrders.getSelectionModel().select(0); //needs to be selected in order to
         }
     }
-    //TODO : Cleanup This can be deleted, using tab instead to update Orders
-//    public void updateOrderLists() throws IOException, ClassNotFoundException {
-//        output.writeObject("order report");
-//        output.flush();
-//        //Redundant but necessary in order to get the list to update.
-//        ArrayList<Order> o = (ArrayList<Order>) input.readObject();
-//        localOrders = null;
-//        localOrders = o;
-//
-//        listFinalizedOrders.setItems(FXCollections.observableArrayList(o));
-//        listFinalizedOrders.getSelectionModel().select(0); //needs to be selected in order to
-//    }
 
-    //TODO : cleanup. Lets update each list individually, so we can get rid of this
+
+    // : cleanup. Lets update each list individually, so we can get rid of this
     public void updateAllProductLists() throws IOException, ClassNotFoundException {
         //Initializing lists with objects
 
@@ -1054,32 +1069,18 @@ public class Controller {
 
     }
 
+    //TODO Cleanup.
     public void updateAllCategoryLists() throws IOException, ClassNotFoundException {
         output.writeObject("category management");
         output.flush();
         output.writeObject("list categories");
         output.flush();
-
         ArrayList<Category> c = (ArrayList<Category>) input.readObject();
 
-        localCategory = null;
-        localCategory = c;
-
         secProductCategoryAdd.setItems(FXCollections.observableArrayList(c));
-
-        //secProductCategoryRemove.setItems(FXCollections.observableArrayList(c));
+        secCategoryAddProduct.setItems(FXCollections.observableArrayList(c));
         secNewDefault.setItems(FXCollections.observableArrayList(c));
         secRemoveCategory.setItems(FXCollections.observableArrayList(c));
-        listCategories.setItems(FXCollections.observableArrayList(c));
-        //System.out.println(c);
-
-        //Testing to see if this does the trick:
-//        secProductCategoryAdd.getSelectionModel().select(0);
-//        secNewDefault.getSelectionModel().select(0);
-//        secRemoveCategory.getSelectionModel().select(0);
-//        listCategories.getSelectionModel().select(0);
-
-
     }
 
     public void updateTabRemoveProduct(Event event) {
@@ -1095,5 +1096,13 @@ public class Controller {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String orderConvertToString(Order order){
+        StringBuilder sb = new StringBuilder();
+        for(Product p : order.getProducts()){
+            sb.append(String.format("%s %s %s%n", p.getName(), p.getId(), p.getBrand()));
+        }
+        return sb.toString();
     }
 }
