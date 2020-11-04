@@ -1,29 +1,27 @@
-# csci3920-pa1
-Team 2 Java PA1
+#README
+PA 1 Assignment
+Raven O'Rourke & Lora Kalthoff
 
-### To Do List (NEW as of Oct 26):
-- [ ] Implement Server, Client, ClientWorker
-  - [X] Get client and server to communicate 
-- [ ] Get Apps working
-  - [X] Store App with JavaFX GUI 
-  - [X] Admin App with JavaFX GUI
-  - [X] Server App
-- [ ] Extra Credit
-- [X] Save/Load
-- [X] Terminate
-- [ ] Finalizing Project
-  - [ ] Adding Javadocs
-  - [ ] Go through TODOs
-  - [ ] Create README for Program (specifying what it does etc)
-  - [ ] General Cleanup
+## Server:
 
+##Admin:
++ Connect to the server with specified ip and port. (Server must be running)
++ login with a valid email address and password.
+####Features:
++ Add new users to the database
++ Add and remove Products from the database
++ Add and remove categories and add/remove them from products
++ View finalized Order list and specify to view orders between to dates.
++ 
+##Catalog:
++ Connect to the server with specified ip and port. (Server must be running)
++ login with a valid email address and password.
+####Features:
++ Browse the catalog of products by search or by catalog
++ Add and remove products to the cart
++ Cancel Order
++ Finalize Order when completed.
 
+##Instructions:
++ If initalize.txt does not exist, run InitializeCompany.java to create test textfile
 
-### Notes:
-Finally made Product class abstract, so i had to comment out all instances of it in test functions
-+ I need to implement the tabs updating lists
-+ I got javadocs on most of Company, need to go through and add them to the Controllers for the apps
-
-## List of what we're doing
-#### Raven: Server/Client classes
-#### Lora: Will continue working on the catalog/admin apps and getting them to work. Also finish the javadocs for Company and Controllers for apps. 
