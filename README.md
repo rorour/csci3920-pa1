@@ -4,7 +4,7 @@ Team 2: Raven O'Rourke & Lora Kalthoff
 
 ## Server:
 + Initialize server from default file "initialize.txt", or from another file containing a Company object.
-++ The company in "initialize.txt" can be logged in from Admin App using alice@admin.com & password 'pw1234567', and from Catalog app using charlie@customer.com & password '1234567pw'.
++ The company in "initialize.txt" can be logged in from Admin App using alice@admin.com & password 'pw1234567', and from Catalog app using charlie@customer.com & password '1234567pw'.
 + If a company was saved previously, it can be initialized from "savedcompany.txt".
 + If initialize.txt does not exist or needs to be updated, run InitializeCompany.java to create the file.
 + If no file is selected, an empty company is created with admin login "admin@admin.com" and password "00000000".
