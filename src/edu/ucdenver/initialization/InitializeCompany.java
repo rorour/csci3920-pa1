@@ -42,6 +42,10 @@ public class InitializeCompany {
         Category c4 = new Category("Books", "103", "All books.");
         Category c5 = new Category("Paperbacks", "104", "Paperback books.");
         Category c6 = new Category("Cell Phones", "105", "Cellular phones.");
+        Category c7 = new Category("Appliances", "106", "Home Appliances");
+        Category c8 = new Category("Bath", "107", "All Kitchen Dishes");
+        Category c9 = new Category("TextBooks", "108", "School Textbooks");
+        
         p2.addCategory(c2);
         p3.addCategory(c2);
         p3.addCategory(c3);
