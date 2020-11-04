@@ -27,6 +27,13 @@ public class InitializeCompany {
         Book p6 = new Book("The Illustrated Man", "1006", "Penguin",
                 "A paperback science fiction book.", today, "Ray Bradbury",
                 LocalDate.of(1960,01,01), 150);
+        Book p7 = new Book("Java: How to program", "1007", "Deitel",
+                "Tenth Edition: Early Objects", today, "Paul Deitel",
+                LocalDate.of(2013,5,3),400);
+        Home p8 = new Home("Washing Machine", "1008", "Sears", "A Washing Machine", today,
+                "Kitchen");
+        Home p9 = new Home("Sink", "1009", "BedBathBeyond", "Bath Sink", today,
+                "Bath");
 
         //create & assign categories
         Category c1 = new Category("Furniture", "100", "Home furnishings.");
@@ -43,6 +50,9 @@ public class InitializeCompany {
         p5.addCategory(c1);
         p6.addCategory(c4);
         p6.addCategory(c5);
+        p7.addCategory(c9);
+        p8.addCategory(c7);
+        p9.addCategory(c8);
 
         //add categories
         company.addCategory(c1);
@@ -51,6 +61,9 @@ public class InitializeCompany {
         company.addCategory(c4);
         company.addCategory(c5);
         company.addCategory(c6);
+        company.addCategory(c7);
+        company.addCategory(c8);
+        company.addCategory(c9);
 
         //add products
         company.addProduct(p2);
@@ -62,6 +75,10 @@ public class InitializeCompany {
         //add users
         company.addUser(new Administrator("Alice Admin", "alice@admin.com", "pw1234567"));
         company.addUser(new Customer("Charlie Customer", "charlie@customer.com", "123456pw"));
+        company.addUser(new Administrator("Susie Sue", "susie@customer.com", "susipassword"));
+        company.addUser(new Customer("David Davis", "david@customer.com", "a=fadiwbafasd"));
+        
+         company.testFinalizedOrders(p3, p5, p3);
 
 
         //temp login user
