@@ -378,7 +378,7 @@ public class Company implements Serializable {
     }
 
     /** DEBUG: Creates a list of finalized orders of different dates*/
-    synchronized public void testFinalizedOrders(){
+    synchronized public void testFinalizedOrders(Product p, Product p2, Product p3){
         Order temp = null;
         for(int i = 1; i < 13; i++){
             temp = new Order(createNewOrderNum());
