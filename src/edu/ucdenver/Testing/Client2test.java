@@ -39,7 +39,7 @@ public class Client2test {
 
     public void disconnect(){}
 
-    public void getServerInitialResponse() throws IOException{};
+    public void getServerInitialResponse() throws IOException{}
 
     public String sendRequest(String request) throws IOException{return "";}
 

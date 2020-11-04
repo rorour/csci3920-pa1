@@ -69,7 +69,7 @@ public class ServerApp {
             System.out.println("Company has not been initialized yet. Please name the company:");
             String companyName = sc.nextLine();
             company = new Company(companyName);
-            Administrator a = new Administrator("Default Admin", "admin@admin.com", "pw");
+            Administrator a = new Administrator("Default Admin", "admin@admin.com", "00000000");
             company.addUser(a);
             System.out.printf("Empty company \"%s\" has been created. Admin login is \"%s\" with password \"%s\"\n",
                     company.getName(), a.getEmail(), a.getPassword());
