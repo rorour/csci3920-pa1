@@ -286,8 +286,8 @@ public class Controller {
      * attempts login using email and password
      */
     public void loginUser(ActionEvent actionEvent) {
-        String email = "alice@admin.com"; //textfieldEmail.getText();
-        String password = "pw1234567"; //passfieldPassword.getText();
+        String email = textfieldEmail.getText();
+        String password = passfieldPassword.getText();
         alert = null;
         serverMessage = null;
         boolean loggedIn = false;
@@ -729,14 +729,6 @@ public class Controller {
             alert.show();
         }
 
-        if (p == null){
-            alert = new Alert(Alert.AlertType.ERROR, "selected product is null");
-            alert.show();
-        } else {
-            alert = new Alert(Alert.AlertType.INFORMATION, "attempting to remove product " + p.getName());
-            alert.show();
-        }
-
         try {
             output.writeObject("product management");
             output.flush();
@@ -1122,10 +1114,15 @@ public class Controller {
         output.flush();
         ArrayList<Category> c = (ArrayList<Category>) input.readObject();
 
-        secProductCategoryAdd.setItems(FXCollections.observableArrayList(c));
-        secCategoryAddProduct.setItems(FXCollections.observableArrayList(c));
-        secNewDefault.setItems(FXCollections.observableArrayList(c));
-        secRemoveCategory.setItems(FXCollections.observableArrayList(c));
+        try {
+            secProductCategoryAdd.setItems(FXCollections.observableArrayList(c));
+            secCategoryAddProduct.setItems(FXCollections.observableArrayList(c));
+            secNewDefault.setItems(FXCollections.observableArrayList(c));
+            secRemoveCategory.setItems(FXCollections.observableArrayList(c));
+        } catch (NullPointerException e){
+
+        }
+
     }
 
     public void updateTabRemoveProduct(Event event) {

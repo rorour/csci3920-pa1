@@ -45,7 +45,9 @@ public class InitializeCompany {
         Category c7 = new Category("Appliances", "106", "Home Appliances");
         Category c8 = new Category("Bath", "107", "All Kitchen Dishes");
         Category c9 = new Category("TextBooks", "108", "School Textbooks");
-        
+        Category c10 = new Category("Home", "109", "All Home items");
+
+
         p2.addCategory(c2);
         p3.addCategory(c2);
         p3.addCategory(c3);
@@ -57,6 +59,13 @@ public class InitializeCompany {
         p7.addCategory(c9);
         p8.addCategory(c7);
         p9.addCategory(c8);
+        p5.addCategory(c10);
+        p8.addCategory(c10);
+        p9.addCategory(c10);
+        p7.addCategory(c4);
+
+
+
 
         //add categories
         company.addCategory(c1);
@@ -68,6 +77,7 @@ public class InitializeCompany {
         company.addCategory(c7);
         company.addCategory(c8);
         company.addCategory(c9);
+        company.addCategory(c10);
 
         //add products
         company.addProduct(p2);
@@ -75,6 +85,9 @@ public class InitializeCompany {
         company.addProduct(p4);
         company.addProduct(p5);
         company.addProduct(p6);
+        company.addProduct(p7);
+        company.addProduct(p8);
+        company.addProduct(p9);
 
         //add users
         company.addUser(new Administrator("Alice Admin", "alice@admin.com", "pw1234567"));

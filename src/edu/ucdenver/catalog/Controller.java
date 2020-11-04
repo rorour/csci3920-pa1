@@ -270,8 +270,8 @@ public class Controller {
      * log in user using email and password
      */
     public void loginUser(ActionEvent actionEvent) throws IOException {
-        String email = "charlie@customer.com"; //textfieldEmail.getText();
-        String password = "123456pw"; //passfieldPassword.getText();
+        String email = textFieldEmail.getText();
+        String password = passfieldPassword.getText();
         alert = null;
         serverMessage = null;
         //boolean loggedIn = false;
