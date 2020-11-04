@@ -1,4 +1,4 @@
-package edu.ucdenver.communication;
+package edu.ucdenver.Testing;
 import edu.ucdenver.company.*;
 
 import java.io.*;
@@ -6,9 +6,6 @@ import java.net.Socket;
 import java.time.LocalDate;
 
 
-/**TODO: implement Client class methods and place in its own package(?)
- *
- */
 public class Client {
     private final int serverPort;
     private final String serverIp;

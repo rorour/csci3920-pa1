@@ -7,6 +7,8 @@
 package edu.ucdenver.company;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class User implements Serializable {
     private String displayName;
@@ -18,9 +20,9 @@ public abstract class User implements Serializable {
 
     public User(String displayName, String email, String password) {
         this.displayName = displayName;
-        this.email = email;
-        this.password = password;
+        setEmail(email);
         this.loggedIn = false;
+        setPassword(password);
     }
 
     public abstract String getAccessLevel();
@@ -37,7 +39,22 @@ public abstract class User implements Serializable {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) throws IllegalArgumentException {
+        if (email.length() < 5){
+            throw new IllegalArgumentException("Invalid email address - too short");
+        }
+        String[] emailSplit = email.split("@");
+        if (emailSplit.length != 2){
+            throw new IllegalArgumentException("Invalid email address - cannot find @ symbol");
+        }
+        String after_at_symbol = emailSplit[1];
+        if (after_at_symbol.length() < 3){
+            throw new IllegalArgumentException("Invalid email address - domain too short");
+        }
+        String[] after_at_split = after_at_symbol.split("\\.");
+        if (after_at_split.length != 2){
+            throw new IllegalArgumentException("Invalid email address - domain should be 2 words separated by dots");
+        }
         this.email = email;
     }
 
@@ -46,7 +63,11 @@ public abstract class User implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        if (password.length() < 8){
+            throw new IllegalArgumentException("Password must be at least 8 characters.");
+        } else {
+            this.password = password;
+        }
     }
 
     public boolean getLoggedIn() {

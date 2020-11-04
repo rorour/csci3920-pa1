@@ -60,12 +60,12 @@ public class InitializeCompany {
         company.addProduct(p6);
 
         //add users
-        company.addUser(new Administrator("Alice Admin", "alice@admin.com", "pw123"));
-        company.addUser(new Customer("Charlie Customer", "charlie@customer.com", "456pw"));
+        company.addUser(new Administrator("Alice Admin", "alice@admin.com", "pw1234567"));
+        company.addUser(new Customer("Charlie Customer", "charlie@customer.com", "123456pw"));
 
 
         //temp login user
-        Customer tempCustomer = (Customer) company.loginUser("charlie@customer.com", "456pw");
+        Customer tempCustomer = (Customer) company.loginUser("charlie@customer.com", "123456pw");
         //add orders
         company.createEmptyOrder(tempCustomer);
         company.addProductToOrder(tempCustomer, p2);

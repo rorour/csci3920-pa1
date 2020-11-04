@@ -1,4 +1,4 @@
-package edu.ucdenver.communication;
+package edu.ucdenver.Testing;
 
 import edu.ucdenver.company.Administrator;
 import edu.ucdenver.company.Electronic;
@@ -10,9 +10,6 @@ import java.time.LocalDate;
 import java.util.Scanner;
 
 
-/**TODO: implement Client class methods and place in its own package(?)
- *
- */
 public class Client2test {
     private final int serverPort;
     private final String serverIp;

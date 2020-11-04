@@ -256,23 +256,19 @@
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
                                     <Label text="Product Name:" GridPane.rowIndex="1" />
                                     <Label text="Product Id:" GridPane.rowIndex="2" />
                                     <Label text="Product Brand:" GridPane.rowIndex="3" />
                                     <Label text="Incorporated Date:" GridPane.rowIndex="4" />
-                                    <Label text="Image path and filename:" GridPane.rowIndex="7" />
-                                    <Label text="Product Description" GridPane.rowIndex="6" />
+                                    <Label text="Product Description" GridPane.rowIndex="5" />
                                     <TextField fx:id="textProductName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <TextField fx:id="textfieldProductID" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <TextField fx:id="textfieldProductBrand" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <TextArea fx:id="textAreaProductDesc" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                    <TextArea fx:id="textAreaProductDesc" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     <DatePicker fx:id="dateIncorporated" prefHeight="26.0" prefWidth="303.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                    <Label text="Category" GridPane.rowIndex="5" />
                                     <ComboBox fx:id="secProductType" prefWidth="150.0" promptText="Product Type" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                    <ComboBox fx:id="secCategoryAddProduct" prefWidth="150.0" promptText="Select Category" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                  </children>
                               </GridPane>
                               <GridPane layoutX="147.0" layoutY="323.0" prefHeight="134.0" prefWidth="562.0">

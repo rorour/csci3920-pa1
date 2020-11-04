@@ -4,14 +4,22 @@ import edu.ucdenver.company.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -20,7 +28,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-//TODO this controller also needs to safely exit out of application
 public class Controller {
     public TextField textFieldServer;
     public TextField textFieldPort;
@@ -37,7 +44,6 @@ public class Controller {
     public ListView listOrders;
     public Button btnRemove;
     public Button btnFinalize;
-    public ImageView imageOrder;
     public TextArea textareaOrderDesc;
     public ListView listFinalizedOrderList;
     public Button btnExit;
@@ -61,14 +67,18 @@ public class Controller {
     public Button btnCancel;
     public ListView listFinalizedProducts;
     public TextArea textAreafinalProducts;
-
+    public ImageView imageBrowseProduct;
+    public ImageView imageSearchProduct;
+    public ImageView imageOrder;
+    public Label labelWelcome;
+    public Tab tabHome;
 
     private ArrayList<Category> localCategories;
     private ArrayList<Product> localProducts;
     private Product selectedProduct;
     private Category selectedCategory;
     private Order selectedOrder;
-    private Customer currentCustomer;
+    private String customerName;
     private Alert alert;
     private boolean loggedIn;
     private String serverMessage;
@@ -87,20 +97,23 @@ public class Controller {
         selectedOrder = null;
     }
 
-//    public void shutdown(){
-//        System.out.println("Shutting down Admin App.");
-//        if (this.serverConnection != null){
-//            try {
-//                output.writeObject("close client");
-//                input.close();
-//                output.close();
-//                serverConnection.close();
-//                System.out.println("Connection to server closed.");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    /**
+     * called when window closed; terminates connection and tells server to close client connection
+     */
+    public void shutdown(){
+        System.out.println("Shutting down Catalog App.");
+        if (this.serverConnection != null){
+            try {
+                output.writeObject("close client");
+                input.close();
+                output.close();
+                serverConnection.close();
+                System.out.println("Connection to server closed.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void initialize() {
         //set default visibility
@@ -114,7 +127,6 @@ public class Controller {
         }
 
 
-        //ChangeListener, oldValue and newValue need to change to the object
         this.listProducts.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Product>() {
             @Override
             public void changed(ObservableValue observable, Product oldValue, Product newValue) {
@@ -122,7 +134,17 @@ public class Controller {
                     selectedProduct = newValue; //for ordering
 
                     textareaDescription.setText(productDesc(newValue));
-                    //imageProduct.setImage(newValue.getImage()); //make an if/else statement based if there is a picture or not
+                    //NEW displaying image code!
+                    BufferedImage bi = new BufferedImage(
+                            selectedProduct.getPhoto().getIconWidth(),
+                            selectedProduct.getPhoto().getIconHeight(),
+                            BufferedImage.TYPE_INT_RGB);
+                    Graphics g = bi.createGraphics();
+                    selectedProduct.getPhoto().paintIcon(null, g, 0,0);
+                    g.dispose();
+                    WritableImage wi = new WritableImage(selectedProduct.getPhoto().getIconWidth(), selectedProduct.getPhoto().getIconHeight());
+                    SwingFXUtils.toFXImage(bi, wi);
+                    imageBrowseProduct.setImage(wi);
                 } else {
                     selectedProduct = null;
                 }
@@ -136,7 +158,16 @@ public class Controller {
                     selectedProduct = newValue; //for ordering
 
                     textareaDescription1.setText(productDesc(newValue));
-                    //imageProduct1.setImage(newValue.getImage()); //make an if/else statement based if there is a picture or not
+                    BufferedImage bi = new BufferedImage(
+                            selectedProduct.getPhoto().getIconWidth(),
+                            selectedProduct.getPhoto().getIconHeight(),
+                            BufferedImage.TYPE_INT_RGB);
+                    Graphics g = bi.createGraphics();
+                    selectedProduct.getPhoto().paintIcon(null, g, 0,0);
+                    g.dispose();
+                    WritableImage wi = new WritableImage(selectedProduct.getPhoto().getIconWidth(), selectedProduct.getPhoto().getIconHeight());
+                    SwingFXUtils.toFXImage(bi, wi);
+                    imageSearchProduct.setImage(wi);
                 } else {
                     selectedProduct = null;
                 }
@@ -161,7 +192,16 @@ public class Controller {
                 if(newValue != null){
                     selectedOrderProduct = newValue;
                     textareaOrderDesc.setText((productDesc(newValue)));
-                    //imageOrder.setImage(newValue.getImage());
+                    BufferedImage bi = new BufferedImage(
+                            selectedProduct.getPhoto().getIconWidth(),
+                            selectedProduct.getPhoto().getIconHeight(),
+                            BufferedImage.TYPE_INT_RGB);
+                    Graphics g = bi.createGraphics();
+                    selectedProduct.getPhoto().paintIcon(null, g, 0,0);
+                    g.dispose();
+                    WritableImage wi = new WritableImage(selectedProduct.getPhoto().getIconWidth(), selectedProduct.getPhoto().getIconHeight());
+                    SwingFXUtils.toFXImage(bi, wi);
+                    imageOrder.setImage(wi);
                 }
                 else {
                     selectedOrderProduct = null;
@@ -186,12 +226,12 @@ public class Controller {
     //=======================================================
     //Server Login
     //========================================================*/
-
+    /**
+     * connects to server
+     */
     public void connectToServer(ActionEvent actionEvent) {
-        //connects to server
-        //TODO get rid of debug
-        String ip = "127.0.0.1";//textFieldServer.getText();
-        int port = 10001; //Integer.parseInt(textFieldPort.getText());
+        String ip = textFieldServer.getText();
+        int port = Integer.parseInt(textFieldPort.getText());
         Alert alert = null;
 
         try {
@@ -226,10 +266,12 @@ public class Controller {
     //=======================================================
     // Customer Login
     //========================================================*/
-
+    /**
+     * log in user using email and password
+     */
     public void loginUser(ActionEvent actionEvent) throws IOException {
         String email = "charlie@customer.com"; //textfieldEmail.getText();
-        String password = "456pw"; //passfieldPassword.getText();
+        String password = "123456pw"; //passfieldPassword.getText();
         alert = null;
         serverMessage = null;
         //boolean loggedIn = false;
@@ -256,15 +298,35 @@ public class Controller {
             paneLogin.setDisable(true);
             paneCatalog.setVisible(true);
             paneCatalog.setDisable(false);
-
             updateBrowseLists(); //needed because browse is the first tab opened.
+            updateWelcomeMessage();
+        }
+    }
 
+    /**
+     * updates welcome message on Home tab
+     */
+    private void updateWelcomeMessage() {
+        try {
+            output.writeObject("get name");
+            output.flush();
+            customerName = (String)input.readObject();
+        } catch (ClassNotFoundException | IOException | NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+        if (customerName != null && customerName.charAt(0) != '1'){
+            labelWelcome.setText(String.format("Welcome to the catalog, %s!", customerName));
+        } else {
+            labelWelcome.setText("Welcome to the catalog!");
         }
     }
 
     //=======================================================
     // Browse and Search
     //========================================================*/
+    /**
+     * gets all products in catalog
+     */
     private ArrayList<Product> browseCategories(Category c) {
         ArrayList<Product> p = null;
         try {
@@ -284,6 +346,10 @@ public class Controller {
     //=======================================================
     // Order Management
     //========================================================*/
+    /**
+     * add product to open order.
+     * If no existing open order, creates new one.
+     */
     public void addToCart(ActionEvent actionEvent) {
         if(selectedProduct != null){
             Product p = selectedProduct;
@@ -307,13 +373,10 @@ public class Controller {
 
             }
         }
-
-
-        //If no existing open order, creates new one.
-        //adds product to open order.
-
     }
-    //TODO Fix: The server/Order class is the problem. Not this implementation.
+    /**
+     * remove product from open order
+     */
     public void removeFromOrder(ActionEvent actionEvent) {
         Product p = selectedProduct;
         try {
@@ -345,6 +408,9 @@ public class Controller {
         }
     }
 
+    /**
+     * cancel open order
+     */
     public void cancelOrder(ActionEvent actionEvent) {
         try {
             output.writeObject("order management");
@@ -365,6 +431,9 @@ public class Controller {
         }
     }
 
+    /**
+     * finalize order; once this is done it can no longer be edited by customer
+     */
     public void finalizeOrder(ActionEvent actionEvent) {
         //takes current open order and finalizes it
         try {
@@ -394,16 +463,13 @@ public class Controller {
         textareaOrderDesc.setText("");
     }
 
-    public void exitApplication(ActionEvent actionEvent) {
-        Stage stage = (Stage) this.btnExit.getScene().getWindow();
-        //TODO: Close client safely in exitApplication
-        stage.close();
-    }
 
     //=======================================================
     // GUI Methods
     //========================================================*/
-
+    /**
+     * below functions update tabs/text fields.
+     */
     private String productDesc(Product p) {
         StringBuilder str = new StringBuilder();
         //reason book is separate is because list order
@@ -484,7 +550,9 @@ public class Controller {
         updateBrowseLists();
 
     }
-
+    /**
+     * search product name and description for specified string
+     */
     public void searchProduct(ActionEvent actionEvent) {
         alert = new Alert(Alert.AlertType.INFORMATION, textSearch.getText());
         String search = null;
@@ -555,20 +623,28 @@ public class Controller {
     }
 
     private void updateOrderMessage(){
-        try{
-            output.writeObject("order management");
-            output.flush();
+        if (loggedIn){
+            try{
+                output.writeObject("order management");
+                output.flush();
 
-            output.writeObject("list order products");
-            output.flush();
+                output.writeObject("list order products");
+                output.flush();
 
-            ArrayList<Order> orders = (ArrayList<Order>) input.readObject();
-            listOrders.setItems(FXCollections.observableArrayList(orders));
+                ArrayList<Order> orders = (ArrayList<Order>) input.readObject();
+                listOrders.setItems(FXCollections.observableArrayList(orders));
+            }
+            catch(IOException | ClassNotFoundException e){
+
+            }
         }
-        catch(IOException | ClassNotFoundException e){
 
-        }
     }
 
 
+    public void updateHomeTab(Event event) {
+        if(tabHome.isSelected() && loggedIn){
+            updateWelcomeMessage();
+        }
+    }
 }
